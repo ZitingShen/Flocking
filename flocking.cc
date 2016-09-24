@@ -5,25 +5,32 @@
 #include <OpenGL/glu.h>
 #else
 #include <GLFW/glfw3.h>
+#include <GL/glu.h>
 #endif
+#include <glm/glm.hpp>
 #include "list.h"
 
 void init();
 void drawCube();
 void reshape(GLFWwindow* window, int w, int h);
 void framebuffer_resize(GLFWwindow* window, int width, int height);
+void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
 
-list boids;
+flock boids;
+int isPaused;
+int paused_times;
+viewMode viewmode;
 
 int main(int argc, char** argv) {
   GLFWwindow* window;
+  int width, height;
 
   // Initialize the library
   if (!glfwInit())
     exit(EXIT_FAILURE);
 
   // Create a window and its OpenGL context
-  window = glfwCreateWindow(500, 500, "Cube", NULL, NULL);
+  window = glfwCreateWindow(500, 500, "Flocking", NULL, NULL);
   if (!window){
     glfwTerminate();
     exit(EXIT_FAILURE);
@@ -35,44 +42,36 @@ int main(int argc, char** argv) {
   glfwSetWindowSizeCallback(window, reshape);
   glfwSetFramebufferSizeCallback(window, framebuffer_resize);
 
-  angle = 0;
-
   init();
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(45, 1, 0.1, 1000);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  gluLookAt(0, 3, 5, 0, 0, 0, 0, 1, 0);
   
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
-  glShadeModel(GL_SMOOTH);
+  glShadeModel(GL_FLAT);
+  viewmode = DEFAULT;
 
   while(!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glRotatef(angle, 0, 1, 0);
-
-    if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
-      drawFlock();
-    }
-    glPopMatrix();
-    angle += 0.5;
-    glfwSwapBuffers(window);
     glfwPollEvents();
+
+    if(!isPaused || paused_times > 0) {
+      if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
+        drawFlock();
+      }
+      glfwSwapBuffers(window);
+      if (isPaused && paused_times > 0) {
+
+      }
+    }
   }
   glfwTerminate();
   exit(EXIT_SUCCESS);
 }
 
 void init() {
-  // set the background color to black
-  glClearColor(0.0, 0.0, 0.0, 1.0);
-  // Set the drawing color to white
-  glColor3f(1.0, 1.0, 1.0);
+  // set the background color to white
+  glClearColor(1.0, 1.0, 1.0, 1.0);
+  // Set the drawing color to black
+  glColor3f(0.0, 0.0, 0.0);
 }
 
 void framebuffer_resize(GLFWwindow* window, int width, int height) {
@@ -80,10 +79,65 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glMatrixMode(GL_MODELVIEW);
+  changeView(viewmode, w, h);
 }
+
+void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
+  if (action == GLFW_PRESS) {
+    switch(key) {
+      case GLFW_KEY_EQUAL:
+      boids.add();
+      break;
+
+      case GLFW_KEY_MINUS:
+      boids.delete();
+      break;
+
+      case GLFW_KEY_P:
+      isPaused = GLFW_TRUE;
+      paused_times++;
+      break;
+
+      case GLFW_KEY_R:
+      isPaused = GLFW_FALSE;
+      paused_times = 0;
+      break;
+
+      case GLFW_KEY_V:
+      viewmode = DEFAULT;
+      glfwGetWindowSize(w, &width, &height);
+      changeView(viewmode, width, height);
+      break;
+
+      case GLFW_KEY_T:
+      viewmode = TRAILING;
+      glfwGetWindowSize(w, &width, &height);
+      changeView(viewmode, width, height);
+      break;
+
+      case GLFW_KEY_G:
+      viewmode = SIDE;
+      glfwGetWindowSize(w, &width, &height);
+      changeView(viewmode, width, height);
+      break;
+
+      case GLFW_KEY_Q:
+      case GLFW_KEY_ESCAPE:
+      glfwSetWindowShouldClose(w, GLFW_TRUE);
+      break;
+      default:
+      break;
+    }
+  } else if (action == GLFW_RELEASE) {
+    switch(key) {
+      default:
+      break;
+    }
+  }
+}
+
+
+
 
 void drawCube() {
   GLfloat vertices[][3] = {{-1.0, -1.0, 1.0}, {-1.0, 1.0, 1.0}, 
