@@ -17,6 +17,8 @@ typedef struct _goal{
   glm::vec4 velocity;
 } GOAL;
 
+BOID* new_boid(glm::vec4 p, glm::vec4 v, float r);
+
 bool is_partner(BOID* source, BOID* target);
 void update_velocity(List* a_flock, float s_w, float a_w, float c_w);
 void update_pos(List* a_flock);
@@ -26,6 +28,10 @@ glm::vec4 mid_point(List* a_flock, GOAL* a_goal);
 glm::vec4 get_u(List* a_flock, GOAL* a_goal);
 float get_d(List* a_flock, GOAL* a_goal);
 float flock_radius(List* a_flock);
+
+// assuming flocks are global variables, therefore no need to return
+void add_a_boid(List* a_flock);
+void remove_a_boid(List* a_flock);
 
 // Set speed cap as a global in main
 #endif

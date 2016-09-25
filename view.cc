@@ -1,10 +1,10 @@
 #include "view.h"
 
 void changeView(viewMode viewmode, int width, int height, List *flock, 
-                GOAL ＊goal) {
-  glm::vec4 center ＝ flock_centroid(List* a_flock);
+                GOAL * goal) {
+  glm::vec4 center = flock_centroid(List* a_flock);
   glm::vec4 midpoint = mid_point(List* a_flock, GOAL* a_goal);
-  float max_distance ＝ flock_radius(List* a_flock);
+  float max_distance =  flock_radius(List* a_flock);
   float distance = get_d(List* a_flock, GOAL* a_goal);
   switch(viewmode) {
     case DEFAULT:
@@ -24,7 +24,7 @@ void changeView(viewMode viewmode, int width, int height, List *flock,
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glm::vec4 camera_pos = center 
+    glm::vec4 camera_pos = center
                       + glm::normalize(center - goal)*(distance + 5*max_distance)
                       + glm::vec4(0, 0, 1, 0)*(distance + max_distance);
     gluLookAt(camera_pos.x, camera_pos.y, camera_pos.z, midpoint.x, midpoint.y, 

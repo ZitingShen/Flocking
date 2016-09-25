@@ -2,6 +2,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
+BOID* new_boid(glm::vec4 p, glm::vec4 v, float r){
+  BOID* a_boid = new BOID;
+  a_boid->pos = p;
+  a_boid->velocity = v;
+  a_boid->flocking_radius = r;
+  return a_boid;
+}
 
 bool is_partner(BOID* source, BOID* target){
   return source->flocking_radius >=
@@ -83,4 +92,21 @@ float flock_radius(List* a_flock){
     current=current->next;
   }
   return max_r;
+}
+
+void add_a_boid(List* a_flock){
+  BOID* target = (BOID*)list_get(a_flock, rand() % a_flock->length);
+  glm::vec4 spawn_pos = target->pos;
+  for (int i = 0; i < 3; i++){
+    srand(time(NULL));
+    spawn_pos[i] = target->pos[i]
+                   + (rand() % 2*target->flocking_radius) - target->flocking_radius;
+  }
+  list_insert(a_flock, new_boid(spawn_pos, target->velocity, target->flocking_radius), 0);
+
+}
+
+void remove_a_boid(List* a_flock){
+  srand(time(NULL));
+  list_delete(a_flock, rand() % a_flock->length);
 }
