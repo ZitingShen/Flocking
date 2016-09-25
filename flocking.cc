@@ -9,6 +9,8 @@
 #endif
 #include <glm/glm.hpp>
 #include "list.h"
+#include "view.h"
+#include "boid.h"
 
 void init();
 void drawCube();
@@ -16,7 +18,8 @@ void reshape(GLFWwindow* window, int w, int h);
 void framebuffer_resize(GLFWwindow* window, int width, int height);
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
 
-flock boids;
+List *flock;
+GOAL goal;
 int isPaused;
 int paused_times;
 viewMode viewmode;
@@ -79,7 +82,7 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  changeView(viewmode, w, h);
+  changeView(viewmode, w, h, flock, goal);
 }
 
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {

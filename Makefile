@@ -7,15 +7,18 @@ CC = gcc
 CFLAGS=-g -Wall -I/usr/local/Cellar/glfw3/3.2.1/include
 
 TARGET = flock
-SRC = $(flock).c
-LIB = list.o boid.o
+SRC = $(flock).cc
+LIB = list.o boid.o view.o
 all: flock
 
 flock: $(SRC) $(LIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $(TARGET) $(SRC) $(LIB)
 
-list.o: list.c list.h
-	$(CC) $(CFLAGS) -c list.c
+list.o: list.cc list.h
+	$(CC) $(CFLAGS) -c list.cc
 
 boid.o: boid.c boid.h
-	$(CC) $(CFLAGS)- c boid.c
+	$(CC) $(CFLAGS) -c boid.cc
+
+view.o: view.c view.h
+	$(CC) $(CFLAGS) -c view.cc
