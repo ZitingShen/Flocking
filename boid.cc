@@ -4,11 +4,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-BOID* new_boid(glm::vec4 p, glm::vec4 v, float r){
+BOID* new_boid(glm::vec4 pos, glm::vec4 velocity, float radius){
   BOID* a_boid = new BOID;
-  a_boid->pos = p;
-  a_boid->velocity = v;
-  a_boid->flocking_radius = r;
+  a_boid->pos = pos;
+  a_boid->velocity = velocity;
+  a_boid->flocking_radius = radius;
   return a_boid;
 }
 
@@ -123,22 +123,22 @@ void remove_a_boid(List* a_flock){
   list_delete(a_flock, rand() % a_flock->length);
 }
 
-void init_a_flock(List* a_flock, glm::vec4 pos, glm::vec4 v, float f_r,
-                  float l, int num){
+void init_a_flock(List* a_flock, glm::vec4 pos, glm::vec4 v,
+                   float flocking_radius, float cube_length, int num){
   if (a_flock == NULL){
     a_flock = new List;
   }
 
   glm::vec4 init_pos = zero_vec;
-  int double_l = static_cast<int>(2*l);
+  float half_l = 0.5*cube_length;
 
   for (int i=0; i<num; i++){
     BOID* a_boid= new BOID;
     a_boid->velocity = v;
-    a_boid->flocking_radius = f_r;
+    a_boid->flocking_radius = flocking_radius;
     for (int j=0; j<4; j++){
       srand(time(NULL));
-      init_pos[j] = pos[j] + (rand() % double_l) - l; //randomise the position
+      init_pos[j] = pos[j] + (rand() % static_cast<int>(cube_length)) - half_l; //randomise the position
     }
     a_boid->pos = init_pos;
     list_insert(a_flock, a_boid, 0);
