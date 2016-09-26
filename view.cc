@@ -53,3 +53,7 @@ void changeView(viewMode viewmode, int width, int height, List *flock,
     break;
   }
 }
+
+void drawBackground() {
+  
+}

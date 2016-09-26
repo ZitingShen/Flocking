@@ -17,4 +17,5 @@ typedef enum viewMode {DEFAULT, TRAILING, SIDE} viewMode;
 
 void changeView(viewMode viewmode, int width, int height, List *flock, 
                 GOAL *goal);
+void drawBackground();
 #endif

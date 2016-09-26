@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
   // Make the window's context current
   glfwMakeContextCurrent(window);
   glfwSetWindowSizeCallback(window, reshape);
+  glfwSetKeyCallback(window, keyboard);
   glfwSetFramebufferSizeCallback(window, framebuffer_resize);
 
   init();
@@ -61,15 +62,17 @@ int main(int argc, char** argv) {
 
   while(!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glfwSwapBuffers(window);
     glfwPollEvents();
 
     if(!isPaused || paused_times > 0) {
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
+        drawBackground();
         //drawFlock();
       }
-      glfwSwapBuffers(window);
       if (isPaused && paused_times > 0) {
 
+        paused_times--;
       }
     }
   }
