@@ -116,6 +116,7 @@ void add_a_boid(List* a_flock){
 }
 
 void remove_a_boid(List* a_flock){
+  if (a_flock == NULL) return;
   srand(time(NULL));
   list_delete(a_flock, rand() % a_flock->length);
 }
