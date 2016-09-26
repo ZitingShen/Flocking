@@ -23,10 +23,10 @@ GOAL goal;
 int isPaused;
 int paused_times;
 viewMode viewmode;
+int width, height;
 
 int main(int argc, char** argv) {
   GLFWwindow* window;
-  int width, height;
 
   // Initialize the library
   if (!glfwInit())
@@ -51,6 +51,13 @@ int main(int argc, char** argv) {
   glEnable(GL_CULL_FACE);
   glShadeModel(GL_FLAT);
   viewmode = DEFAULT;
+  isPaused = GLFW_FALSE;
+  paused_times = 0;
+  goal.pos = zero_vec;
+  flock = NULL;
+
+  glfwGetWindowSize(window, &width, &height);
+  changeView(viewmode, width, height, flock, &goal);
 
   while(!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -58,7 +65,7 @@ int main(int argc, char** argv) {
 
     if(!isPaused || paused_times > 0) {
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
-        drawFlock();
+        //drawFlock();
       }
       glfwSwapBuffers(window);
       if (isPaused && paused_times > 0) {
@@ -82,18 +89,18 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  changeView(viewmode, w, h, flock, goal);
+  changeView(viewmode, w, h, flock, &goal);
 }
 
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
   if (action == GLFW_PRESS) {
     switch(key) {
       case GLFW_KEY_EQUAL:
-      boids.add();
+      add_a_boid(flock);
       break;
 
       case GLFW_KEY_MINUS:
-      boids.delete();
+      remove_a_boid(flock);
       break;
 
       case GLFW_KEY_P:
@@ -109,19 +116,19 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
       case GLFW_KEY_V:
       viewmode = DEFAULT;
       glfwGetWindowSize(w, &width, &height);
-      changeView(viewmode, width, height);
+      changeView(viewmode, width, height, flock, &goal);
       break;
 
       case GLFW_KEY_T:
       viewmode = TRAILING;
       glfwGetWindowSize(w, &width, &height);
-      changeView(viewmode, width, height);
+      changeView(viewmode, width, height, flock, &goal);
       break;
 
       case GLFW_KEY_G:
       viewmode = SIDE;
       glfwGetWindowSize(w, &width, &height);
-      changeView(viewmode, width, height);
+      changeView(viewmode, width, height, flock, &goal);
       break;
 
       case GLFW_KEY_Q:
