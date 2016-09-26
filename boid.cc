@@ -144,3 +144,13 @@ void init_a_flock(List* a_flock, glm::vec4 pos, glm::vec4 v,
     list_insert(a_flock, a_boid, 0);
   }
 }
+
+void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w){
+  NODE* current=a_flock->head;
+  glm::vec4 v_modifier = zero_vec;
+  while (current!=NULL){
+    v_modifier = g_w * (a_goal->pos - ((BOID*)(current->data))->pos);
+    ((BOID*)(current->data))->velocity += v_modifier;
+    current = current->next;
+  }
+}

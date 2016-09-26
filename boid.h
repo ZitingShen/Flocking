@@ -17,6 +17,18 @@ typedef struct _goal{
   glm::vec4 velocity;
 } GOAL;
 
+typedef struct _predator{
+  glm::vec4 pos;
+  glm::vec4 velocity;
+  float deterrence_range;
+  float attack_range;
+} PREDATOR;
+
+typedef struct _obstacle{
+  glm::vec4 pos;
+  float avoidance_range;
+} OBSTACLE;
+
 BOID* new_boid(glm::vec4 pos, glm::vec4 velocity, float radius);
 
 bool is_partner(BOID* source, BOID* target);
@@ -36,5 +48,10 @@ void remove_a_boid(List* a_flock);
 void init_a_flock(List* a_flock, glm::vec4 pos, glm::vec4 velocity,
                   float flocking_radius, float cube_length, int num);
 
+void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w);
+
+/* To DO */
+void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, float p_w);
+void apply_obstacle_avoidance(List* a_flock, OBSTACLE* an_obstable, float o_w);
 // Set speed cap as a global in main
 #endif
