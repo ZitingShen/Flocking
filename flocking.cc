@@ -5,6 +5,7 @@ void drawCube();
 void reshape(GLFWwindow* window, int w, int h);
 void framebuffer_resize(GLFWwindow* window, int width, int height);
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
+void moveBoidsVertices(List* a_flock, GLfloat** boid_vertices);
 
 List *flock;
 GOAL goal;
@@ -137,8 +138,28 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
   }
 }
 
+void moveBoidsVertices(List* a_flock, GLfloat** boid_vertices){
+  int flock_size = a_flock->length;
+  NODE* current = a_flock->head;
+  if (boid_vertices!=NULL){
+    for (int i=0; i<flock_size; i++){
+      delete [] boid_vertices[i];
+    }
+    delete [] boid_vertices;
+  }
 
+  boid_vertices = new GLfloat*[flock_size];
+  for (int i=0; i<flock_size; i++){
+    boid_vertices[i] = new GLfloat[DIMENSIONS];
+  }
 
+  for (int i=0; i<flock_size; i++){
+    boid_vertices[i][0] = ((BOID*)(current->data))->pos[0];
+    boid_vertices[i][1] = ((BOID*)(current->data))->pos[1];
+    boid_vertices[i][2] = ((BOID*)(current->data))->pos[2];
+    boid_vertices[i][3] = 1.0; // position is a point
+  }
+}
 
 void drawCube() {
   GLfloat vertices[][3] = {{-1.0, -1.0, 1.0}, {-1.0, 1.0, 1.0}, 
