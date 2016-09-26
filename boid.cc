@@ -103,10 +103,13 @@ float flock_radius(List* a_flock){
 }
 
 void add_a_boid(List* a_flock){
+  if (a_flock == NULL){
+    a_flock = new List;
+  }
   BOID* target = (BOID*)list_get(a_flock, rand() % a_flock->length);
   glm::vec4 spawn_pos = target->pos;
-  float modifer_upper_bond = (target->flocking_radius)/(glm::sqrt(2));
-  for (int i = 0; i < 3; i++){
+  int modifer_upper_bond = static_cast<int>((target->flocking_radius)/(glm::sqrt(2)));
+  for (int i=0; i<4; i++){
     srand(time(NULL));
     spawn_pos[i] = target->pos[i]
                    + (rand() % 2*modifer_upper_bond) - modifer_upper_bond;
@@ -116,7 +119,29 @@ void add_a_boid(List* a_flock){
 }
 
 void remove_a_boid(List* a_flock){
-  if (a_flock == NULL) return;
+  if (a_flock == NULL) return; //nothing to remove
   srand(time(NULL));
   list_delete(a_flock, rand() % a_flock->length);
+}
+
+void init_a_flock(List* a_flock, glm::vec4 pos, glm::vec4 v, float f_r,
+                  float l, int num){
+  if (a_flock == NULL){
+    a_flock = new List;
+  }
+
+  glm::vec4 init_pos = zero_vec;
+  int double_l = static_cast<int>(2*l);
+
+  for (int i=0; i<num; i++){
+    BOID* a_boid= new BOID;
+    a_boid->velocity = v;
+    a_boid->flocking_radius = f_r;
+    for (int j=0; j<4; j++){
+      srand(time(NULL));
+      init_pos[j] = pos[j] + (rand() % double_l) - l; //randomise the position
+    }
+    a_boid->pos = init_pos;
+    list_insert(a_flock, a_boid, 0);
+  }
 }

@@ -33,5 +33,8 @@ float flock_radius(List* a_flock);
 void add_a_boid(List* a_flock);
 void remove_a_boid(List* a_flock);
 
+void init_a_flock(List* a_flock, glm::vec4 pos, glm::vec4 v, float f_r,
+                  float l, int num);
+
 // Set speed cap as a global in main
 #endif
