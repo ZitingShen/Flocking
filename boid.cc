@@ -103,10 +103,9 @@ float flock_radius(List* a_flock){
 }
 
 void add_a_boid(List* a_flock){
-  if (a_flock == NULL){
-    a_flock = new List;
-  }
+  if (a_flock == NULL){return;}
   BOID* target = (BOID*)list_get(a_flock, rand() % a_flock->length);
+
   glm::vec4 spawn_pos = target->pos;
   int modifer_upper_bond = static_cast<int>((target->flocking_radius)/(glm::sqrt(2)));
   for (int i=0; i<4; i++){
