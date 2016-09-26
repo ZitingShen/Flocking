@@ -1,16 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef __APPLE__
-#include <GLFW/glfw3.h>
-#include <OpenGL/glu.h>
-#else
-#include <GLFW/glfw3.h>
-#include <GL/glu.h>
-#endif
-#include <glm/glm.hpp>
-#include "list.h"
-#include "view.h"
-#include "boid.h"
+#include "flocking.h"
 
 void init();
 void drawCube();
