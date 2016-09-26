@@ -66,7 +66,6 @@ int main(int argc, char** argv) {
         //drawFlock();
       }
       if (isPaused && paused_times > 0) {
-
         paused_times--;
       }
     }
