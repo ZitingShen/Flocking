@@ -1,7 +1,7 @@
 #include "view.h"
 
 void changeView(viewMode viewmode, int width, int height, List *flock, 
-                GOAL *goal) {
+                GOAL *goal, int tower_h) {
   glm::vec4 center = flock_centroid(flock);
   glm::vec4 midpoint = mid_point(flock, goal);
   float max_distance =  flock_radius(flock);
@@ -15,7 +15,7 @@ void changeView(viewMode viewmode, int width, int height, List *flock,
     gluPerspective(45, width*1.0/height, 0.1, 1000);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, DEFAULT_VIEW_Y, 1, midpoint.x, midpoint.y, midpoint.z, 
+    gluLookAt(0, tower_h, 1, midpoint.x, midpoint.y, midpoint.z, 
               0, 1, 0);
     break;
 

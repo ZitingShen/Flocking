@@ -12,6 +12,7 @@ int isPaused;
 int paused_times;
 viewMode viewmode;
 int width, height;
+GLfloat **boids_vertices;
 
 int main(int argc, char** argv) {
   GLFWwindow* window;
@@ -43,10 +44,13 @@ int main(int argc, char** argv) {
   isPaused = GLFW_FALSE;
   paused_times = 0;
   goal.pos = zero_vec;
-  flock = NULL;
+  flock = list_new();
+  init_a_flock(flock, zero_vec, glm::vec4(0.0, 0.0, 0.0, 1.0), 
+    DEFAULT_FLOCKING_RADIUS, DEFAULT_SPAWN_CUBE_LENGTH, DEFAULT_FLOCK_SIZE);
+  boids_vertices = NULL;
 
   glfwGetWindowSize(window, &width, &height);
-  changeView(viewmode, width, height, flock, &goal);
+  changeView(viewmode, width, height, flock, &goal, DEFAULT_TOWER_HEIGHT);
 
   while(!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -54,8 +58,11 @@ int main(int argc, char** argv) {
     glfwPollEvents();
 
     if(!isPaused || paused_times > 0) {
+      //moveBoidsVertices(flock, boids_vertices);
+      //moveGoal(goal);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
         drawBackground();
+        //drawFlock(boids_vertices);
         //drawFlock();
       }
       if (isPaused && paused_times > 0) {
@@ -80,7 +87,7 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  changeView(viewmode, w, h, flock, &goal);
+  changeView(viewmode, w, h, flock, &goal, DEFAULT_TOWER_HEIGHT);
 }
 
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
@@ -107,19 +114,19 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
       case GLFW_KEY_V:
       viewmode = DEFAULT;
       glfwGetWindowSize(w, &width, &height);
-      changeView(viewmode, width, height, flock, &goal);
+      changeView(viewmode, width, height, flock, &goal, DEFAULT_TOWER_HEIGHT);
       break;
 
       case GLFW_KEY_T:
       viewmode = TRAILING;
       glfwGetWindowSize(w, &width, &height);
-      changeView(viewmode, width, height, flock, &goal);
+      changeView(viewmode, width, height, flock, &goal, DEFAULT_TOWER_HEIGHT);
       break;
 
       case GLFW_KEY_G:
       viewmode = SIDE;
       glfwGetWindowSize(w, &width, &height);
-      changeView(viewmode, width, height, flock, &goal);
+      changeView(viewmode, width, height, flock, &goal, DEFAULT_TOWER_HEIGHT);
       break;
 
       case GLFW_KEY_Q:
