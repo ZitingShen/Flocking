@@ -11,6 +11,7 @@
 #include <GL/glu.h>
 #endif
 #include <glm/glm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include "list.h"
 #include "view.h"
 #include "boid.h"
@@ -30,6 +31,8 @@ const glm::vec4 SPAWN_POSITION = glm::vec4(2400.0,150.0,1200.0,1);
 
 #define DIMENSIONS                3
 #define BOID_SIZE                 5
+
+#define VERTICES_PER_BOID         4
 
 #define TOWER_HEIGHT     		  100
 
