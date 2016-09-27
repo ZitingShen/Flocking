@@ -15,8 +15,8 @@ void changeView(viewMode viewmode, int width, int height, List *flock,
     gluPerspective(45, width*1.0/height, 0.1, 1000);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, tower_h, 1, midpoint.x, midpoint.y, midpoint.z, 
-              0, 1, 0);
+    gluLookAt(0, 0, tower_h, midpoint.x, midpoint.y, midpoint.z, 
+              0, 0, 1);
     break;
 
     case TRAILING:
@@ -54,7 +54,41 @@ void changeView(viewMode viewmode, int width, int height, List *flock,
   }
 }
 
-void initBackground() {}
+void initBackground(int side, int square_num, GLfloat bg_vertices[][3], 
+                    GLfloat bg_colors[][3]) {
+  int index = 0;
+  int square_side = side/square_num;
+  for (int row = 0; row < square_num; row++) {
+    for (int column = 0; column < square_num; column++) {
+      bg_vertices[4*index][0] = column*square_side - side/2;
+      bg_vertices[4*index][1] = row*square_side - side/2;
+      bg_vertices[4*index][2] = 0;
+      bg_vertices[4*index+1][0] = column*square_side - side/2;
+      bg_vertices[4*index+1][1] = (row+1)*square_side - side/2;
+      bg_vertices[4*index+1][2] = 0;
+      bg_vertices[4*index+2][0] = (column+1)*square_side - side/2;
+      bg_vertices[4*index+2][1] = (row+1)*square_side - side/2;
+      bg_vertices[4*index+2][2] = 0;
+      bg_vertices[4*index+3][0] = (column+1)*square_side - side/2; 
+      bg_vertices[4*index+3][1] = row*square_side - side/2;
+      bg_vertices[4*index+3][2] = 0;
+      int color = (row+column)%2;
+      bg_colors[index][0] = color;
+      bg_colors[index][1] = color;
+      bg_colors[index][2] = color;
+      index++;
+    }
+  }
 
-void drawBackground() {
+  GLuint vbos[2];
+  glGenBuffers(2, vbos);
+  glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(bg_vertices), bg_vertices, 
+    GL_STATIC_DRAW);
+  
+}
+
+void drawBackground(int square_num, GLfloat bg_vertices[][3], 
+                    GLfloat bg_colors[][3]) {
+  glDrawArrays(GL_QUADS, 0, square_num*square_num);
 }
