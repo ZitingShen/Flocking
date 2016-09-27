@@ -29,6 +29,7 @@ const glm::vec4 SPAWN_POSITION = glm::vec4(2400.0,150.0,1200.0,1);
 #define DEFUALT_AVOIDANCE_WEIGHT  0.8 // this should be significant as well
 
 #define DIMENSIONS                3
+#define BOID_SIZE                 5
 
 #define DEFAULT_TOWER_HEIGHT      100
 

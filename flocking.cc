@@ -1,19 +1,21 @@
 #include "flocking.h"
 
 void init();
-void drawCube();
+void draw_cube();
 void reshape(GLFWwindow* window, int w, int h);
 void framebuffer_resize(GLFWwindow* window, int width, int height);
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
-void moveBoidsVertices(List* a_flock, GLfloat** boid_vertices);
+void move_boids_pos(List* a_flock, GLfloat** boid_poly, int vertices_per_boid);
+void draw_boids(GLfloat** boid_poly, int vertices_per_boid);
 
-List *flock;
+List* flock;
+
 GOAL goal;
 int isPaused;
 int paused_times;
 viewMode viewmode;
 int width, height;
-GLfloat **boids_vertices;
+GLfloat **boids_poly;
 
 int main(int argc, char** argv) {
   GLFWwindow* window;
@@ -48,7 +50,7 @@ int main(int argc, char** argv) {
   flock = list_new();
   init_a_flock(flock, zero_vec, glm::vec4(0.0, 0.0, 0.0, 1.0), 
     DEFAULT_FLOCKING_RADIUS, DEFAULT_SPAWN_CUBE_LENGTH, DEFAULT_FLOCK_SIZE);
-  boids_vertices = NULL;
+  boids_poly = NULL;
 
   glfwGetWindowSize(window, &width, &height);
   changeView(viewmode, width, height, flock, &goal, DEFAULT_TOWER_HEIGHT);
@@ -59,11 +61,11 @@ int main(int argc, char** argv) {
     glfwPollEvents();
 
     if(!isPaused || paused_times > 0) {
-      //moveBoidsVertices(flock, boids_vertices);
+      //move_boids_pos(flock, boid_poly);
       //moveGoal(goal);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
         drawBackground();
-        //drawFlock(boids_vertices);
+      //draw_boids(boid_poly, vertices_per_boid);
         //drawFlock();
       }
       if (isPaused && paused_times > 0) {
@@ -145,30 +147,43 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
   }
 }
 
-void moveBoidsVertices(List* a_flock, GLfloat** boid_vertices){
-  int flock_size = a_flock->length;
-  NODE* current = a_flock->head;
-  if (boid_vertices!=NULL){
+void generate_poly_vertices(GLfloat** boid_pos, GLfloat** boid_poly,
+                            int vertices_per_boid, int flock_size){
+  if (boid_poly!=NULL){
     for (int i=0; i<flock_size; i++){
-      delete [] boid_vertices[i];
+      delete boid_poly[i];
     }
-    delete [] boid_vertices;
+    delete [] boid_poly;
   }
 
-  boid_vertices = new GLfloat*[flock_size];
+  boid_poly = new GLfloat*[flock_size];
   for (int i=0; i<flock_size; i++){
-    boid_vertices[i] = new GLfloat[DIMENSIONS];
+    boid_poly[i]= new GLfloat[vertices_per_boid];
   }
+  /* drawing two triangles */
 
-  for (int i=0; i<flock_size; i++){
-    boid_vertices[i][0] = ((BOID*)(current->data))->pos[0];
-    boid_vertices[i][1] = ((BOID*)(current->data))->pos[1];
-    boid_vertices[i][2] = ((BOID*)(current->data))->pos[2];
-    boid_vertices[i][3] = 1.0; // position is a point
-  }
 }
 
-void drawCube() {
+
+void move_boids_pos(List* a_flock, GLfloat** boid_poly, int vertices_per_boid){
+  int flock_size = a_flock->length;
+  NODE* current = a_flock->head;
+
+  GLfloat** boid_pos = new GLfloat*[flock_size];
+  for (int i=0; i<flock_size; i++){
+    boid_pos[i] = new GLfloat[DIMENSIONS];
+  }
+
+  for (int i=0; i<flock_size; i++){
+    boid_pos[i][0] = ((BOID*)(current->data))->pos[0];
+    boid_pos[i][1] = ((BOID*)(current->data))->pos[1];
+    boid_pos[i][2] = ((BOID*)(current->data))->pos[2];
+    boid_pos[i][3] = 1.0; // position is a point
+  }
+  generate_poly_vertices(boid_pos, boid_poly, vertices_per_boid, flock_size);
+}
+
+void draw_cube() {
   GLfloat vertices[][3] = {{-1.0, -1.0, 1.0}, {-1.0, 1.0, 1.0}, 
                            {1.0, 1.0, 1.0}, {1.0, -1.0, 1.0}, 
                            {-1.0, -1.0, -1.0}, {-1.0, 1.0, -1.0}, 
@@ -190,4 +205,9 @@ void drawCube() {
   glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, cubeIndices);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void draw_boids(GLfloat** boid_poly, int vertices_per_boid){
+
+
 }

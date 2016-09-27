@@ -7,7 +7,10 @@
 const glm::vec4 zero_vec = glm::vec4(0.0,0.0,0.0,0.0);
 
 typedef struct _boid{
-  glm::vec4 pos;           // [x_pos, y_pos, z_pos]
+  glm::vec4 centre;           // [x_pos, y_pos, z_pos]
+  glm::vec4 head;
+  glm::vec4 left;
+  glm::vec4 right;
   glm::vec4 velocity;      // [s*cos(theta), s*sin(theta), 0]
   float flocking_radius;   // the radius within which it looks for partners
 } BOID;
