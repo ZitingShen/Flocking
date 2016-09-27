@@ -31,6 +31,8 @@ const glm::vec4 SPAWN_POSITION = glm::vec4(2400.0,150.0,1200.0,1);
 #define DIMENSIONS                3
 #define BOID_SIZE                 5
 
-#define DEFAULT_TOWER_HEIGHT      100
+#define TOWER_HEIGHT     		  100
 
+#define BG_SIDE_LENGTH			  20000
+#define BG_SQUARE_NUM			  50
 #endif
