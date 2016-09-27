@@ -11,14 +11,14 @@
 #include <GL/glu.h>
 #endif
 #include <glm/glm.hpp>
-#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/rotate_vector.hpp> // for rotate
+#include <glm/gtx/quaternion.hpp>    // for rotation angle
 #include "list.h"
 #include "view.h"
 #include "boid.h"
 
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
-const glm::vec4 SPAWN_VELOCITY = glm::vec4(10.0,10.0,0,0);
-const glm::vec4 SPAWN_POSITION = glm::vec4(2400.0,150.0,1200.0,1);
+const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,10.0,0,0); //initial speed parallel with y-axis
 #define DEFAULT_SPAWN_CUBE_LENGTH 50.0
 #define DEFAULT_FLOCKING_RADIUS   30.0
 #define DEFAULT_FLOCK_SIZE        20
