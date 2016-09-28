@@ -80,12 +80,13 @@ glm::vec4 get_current_pos(BOID* a_boid){
 }
 
 glm::vec4 flock_centroid(List* a_flock){
-  if (a_flock == NULL || a_flock->length == 0) return zero_vec;
+  if (a_flock == NULL || a_flock->length == 0) 
+    return glm::vec4(0, 0, 0, 1);
   NODE* current = a_flock->head;
-  glm::vec4 centroid = zero_vec;
+  glm::vec4 centroid = glm::vec4(0, 0, 0, 1);
   while (current != NULL){
      centroid += get_current_pos((BOID*)(current->data));
-     current=current->next;
+     current = current->next;
   }
   return centroid*(float)((1.0f/(float)a_flock->length));
 }
@@ -122,7 +123,7 @@ float flock_radius(List* a_flock){
 
 void add_a_boid(List* a_flock){
   if (a_flock == NULL){return;}  // use init_a_flock to create a new flock
-  int default_cube_length = PARTNER_RADIUS/glm::sqrt(2);
+  int default_cube_length = PARTNER_RADIUS*glm::sqrt(2);
   int half_cube_length    = default_cube_length/2;
   glm::vec4 pos;
   if (a_flock->length == 0) {
@@ -142,17 +143,16 @@ void add_a_boid(List* a_flock){
   pos.z = target->pos.z + (rand() % default_cube_length) - half_cube_length; 
   pos.w = 1;
 
-  list_insert(a_flock, new_boid(target->velocity, target->partner_radius, pos), 0);
+  list_insert(a_flock, new_boid(target->velocity, PARTNER_RADIUS, pos), 0);
 }
 
 void remove_a_boid(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0) return; //nothing to remove
-  srand(time(NULL));
   list_delete(a_flock, rand() % a_flock->length);
 }
 
 void init_a_flock(List* a_flock){
-  int default_cube_length = SPAWN_CUBE_LENGTH;
+  int default_cube_length = SPAWN_CUBE_LENGTH*glm::sqrt(2);
   int half_cube_length = default_cube_length/2;
 
   for (int i = 0; i < DEFAULT_FLOCK_SIZE; i++){
@@ -191,7 +191,7 @@ void draw_a_flock(List* a_flock){
     //}
     glPushMatrix();
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
-    //glMultMatrixf(rotate_matrix);
+    // glMultMatrixf(rotate_matrix);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_BOID_VERTICES);
     glPopMatrix();
     current = current->next;
