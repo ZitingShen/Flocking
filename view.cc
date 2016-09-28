@@ -1,6 +1,7 @@
 #include "view.h"
+#include <iostream>
 
-void changeView(viewMode viewmode, int width, int height, List *flock, 
+void change_view(viewMode viewmode, int width, int height, List *flock, 
                 GOAL *goal) {
   glm::vec4 center = flock_centroid(flock);
   glm::vec4 midpoint = mid_point(flock, goal);
@@ -17,7 +18,7 @@ void changeView(viewMode viewmode, int width, int height, List *flock,
     glLoadIdentity();
     gluLookAt(0, 0.01, TOWER_HEIGHT, midpoint.x, midpoint.y, midpoint.z, 
               0, 0, 1);
-    //gluLookAt(0, 0.01, 5, 0, 0, 0, 0, 0, 1);
+    //std::cout << midpoint.x << " " << midpoint.y << " " << midpoint.z << std::endl;
     break;
 
     case TRAILING:
@@ -55,41 +56,31 @@ void changeView(viewMode viewmode, int width, int height, List *flock,
   }
 }
 
-void initBackground(int side, int square_num, GLfloat bg_vertices[][3], 
-                    GLfloat bg_colors[][3]) {
+void init_background(GLfloat squares_pos[][2]) {
   int index = 0;
-  int square_side = side/square_num;
-  for (int row = 0; row < square_num; row++) {
-    for (int column = 0; column < square_num; column++) {
-      bg_vertices[4*index][0] = column*square_side - side/2;
-      bg_vertices[4*index][1] = row*square_side - side/2;
-      bg_vertices[4*index][2] = 0;
-      bg_vertices[4*index+1][0] = column*square_side - side/2;
-      bg_vertices[4*index+1][1] = (row+1)*square_side - side/2;
-      bg_vertices[4*index+1][2] = 0;
-      bg_vertices[4*index+2][0] = (column+1)*square_side - side/2;
-      bg_vertices[4*index+2][1] = (row+1)*square_side - side/2;
-      bg_vertices[4*index+2][2] = 0;
-      bg_vertices[4*index+3][0] = (column+1)*square_side - side/2; 
-      bg_vertices[4*index+3][1] = row*square_side - side/2;
-      bg_vertices[4*index+3][2] = 0;
-      int color = (row+column)%2;
-      bg_colors[index][0] = color;
-      bg_colors[index][1] = color;
-      bg_colors[index][2] = color;
+  for (int row = 0; row < BG_SQUARE_NUM; row++) {
+    for (int column = 0; column < BG_SQUARE_NUM; column++) {
+      squares_pos[index][0] = (row - BG_SQUARE_NUM/2.0)*BG_SQUARE_SIDE;
+      squares_pos[index][1] = (column - BG_SQUARE_NUM/2.0)*BG_SQUARE_SIDE;
       index++;
     }
   }
-
-  GLuint vbos[2];
-  glGenBuffers(2, vbos);
-  glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(bg_vertices), bg_vertices, 
-    GL_STATIC_DRAW);
-
 }
 
-void drawBackground(int square_num, GLfloat bg_vertices[][3], 
-                    GLfloat bg_colors[][3]) {
-  glDrawArrays(GL_QUADS, 0, square_num*square_num);
+void draw_background(GLfloat squares_pos[][2]) {
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glVertexPointer(4, GL_FLOAT, 0, A_SQUARE);
+  for (int i = 0; i < BG_SQUARE_NUM*BG_SQUARE_NUM; i++) {
+    if(i % 2 == 0) {
+      glColor3f(1.0, 0.0, 0.0);
+    } else {
+      glColor3f(0.0, 0.0, 1.0);
+    }
+    glPushMatrix();
+      
+    glTranslatef(squares_pos[i][0], squares_pos[i][1], 10);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+    glPopMatrix();
+  }
+  glDisableClientState(GL_VERTEX_ARRAY);
 }
