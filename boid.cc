@@ -18,7 +18,7 @@ bool is_partner(BOID* source, BOID* target){
 }
 
 void update_velocity(List* a_flock, float s_w, float a_w, float c_w){
-  if (a_flock == NULL) return;
+  if (a_flock == NULL || a_flock->length == 0) return;
   NODE* current_boid = a_flock->head;
   NODE* potential_partner = a_flock->head;
   glm::vec4 s_modifier = zero_vec;
@@ -54,7 +54,7 @@ void update_velocity(List* a_flock, float s_w, float a_w, float c_w){
 }
 
 void update_pos(List* a_flock){
-  if (a_flock == NULL) return;
+  if (a_flock == NULL || a_flock->length == 0) return;
   NODE* current = a_flock->head;
   while(current != NULL){
      ((BOID*)(current->data))->pos += ((BOID*)(current->data))->velocity;
@@ -62,7 +62,7 @@ void update_pos(List* a_flock){
 }
 
 glm::vec4 flock_centroid(List* a_flock){
-  if (a_flock == NULL) return zero_vec;
+  if (a_flock == NULL || a_flock->length == 0) return zero_vec;
   NODE* current = a_flock->head;
   glm::vec4 centroid = zero_vec;
   while (current != NULL){
@@ -73,22 +73,22 @@ glm::vec4 flock_centroid(List* a_flock){
 }
 
 glm::vec4 mid_point(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL) return zero_vec;
+  if (a_flock == NULL || a_flock->length == 0) return zero_vec;
   return (flock_centroid(a_flock)+(a_goal->pos))*(0.5f);
 }
 
 glm::vec4 get_u(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL) return zero_vec;
+  if (a_flock == NULL || a_flock->length == 0) return zero_vec;
   return (a_goal->pos - flock_centroid(a_flock));
 }
 
 float get_d(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL) return 0;
+  if (a_flock == NULL || a_flock->length == 0) return 0;
   return glm::distance(flock_centroid(a_flock), a_goal->pos);
 }
 
 float flock_radius(List* a_flock){
-  if (a_flock == NULL) return 0;
+  if (a_flock == NULL || a_flock->length == 0) return 0;
 
   float max_r = 0;
   float dis   = 0;
@@ -118,7 +118,7 @@ void add_a_boid(List* a_flock){
 }
 
 void remove_a_boid(List* a_flock){
-  if (a_flock == NULL) return; //nothing to remove
+  if (a_flock == NULL || a_flock->length == 0) return; //nothing to remove
   srand(time(NULL));
   list_delete(a_flock, rand() % a_flock->length);
 }

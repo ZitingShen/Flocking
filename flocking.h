@@ -1,7 +1,7 @@
 #ifndef FLOCKING_H
 #define FLOCKING_H
 
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #ifdef __APPLE__
 #include <GLFW/glfw3.h>

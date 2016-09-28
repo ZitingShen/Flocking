@@ -15,8 +15,9 @@ void changeView(viewMode viewmode, int width, int height, List *flock,
     gluPerspective(45, width*1.0/height, 0.1, 1000);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0, tower_h, midpoint.x, midpoint.y, midpoint.z, 
+    gluLookAt(0, 0.01, tower_h, midpoint.x, midpoint.y, midpoint.z, 
               0, 0, 1);
+    //gluLookAt(0, 0.01, 5, 0, 0, 0, 0, 0, 1);
     break;
 
     case TRAILING:
@@ -85,7 +86,7 @@ void initBackground(int side, int square_num, GLfloat bg_vertices[][3],
   glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
   glBufferData(GL_ARRAY_BUFFER, sizeof(bg_vertices), bg_vertices, 
     GL_STATIC_DRAW);
-  
+
 }
 
 void drawBackground(int square_num, GLfloat bg_vertices[][3], 

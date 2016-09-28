@@ -41,8 +41,8 @@ int main(int argc, char** argv) {
   glfwSetKeyCallback(window, keyboard);
   glfwSetFramebufferSizeCallback(window, framebuffer_resize);
 
-  A_GOAL.pos = zero_vec;
-  initBackground(BG_SIDE_LENGTH, BG_SQUARE_NUM, bg_vertices, bg_colors);
+  
+  //initBackground(BG_SIDE_LENGTH, BG_SQUARE_NUM, bg_vertices, bg_colors);
 
   init();
 
@@ -61,12 +61,12 @@ int main(int argc, char** argv) {
       //move_boids_pos(flock, boid_poly);
       //moveGoal(goal);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
-        drawBackground();
-      //draw_boids(boid_poly, vertices_per_boid);
-        drawBackground(BG_SQUARE_NUM, bg_vertices, bg_colors);
+        //drawBackground();
+        //draw_boids(boid_poly, vertices_per_boid);
+        //drawBackground(BG_SQUARE_NUM, bg_vertices, bg_colors);
         //drawFlock(boids_vertices);
         //drawFlock();
-        //drawCube();
+        //draw_cube();
       }
       glfwSwapBuffers(window);
       if (IS_PAUSED && PAUSE_TIME > 0) {
@@ -84,6 +84,8 @@ void init() {
   // Set the drawing color to black
   glColor3f(0.0, 0.0, 0.0);
   // initialise a flock of boid
+  A_FLOCK = list_new();
+  A_GOAL.pos = zero_vec;
   init_a_flock(A_FLOCK, SPAWN_POSITION, SPAWN_VELOCITY, DEFAULT_FLOCKING_RADIUS,
                DEFAULT_SPAWN_CUBE_LENGTH, DEFAULT_FLOCK_SIZE);
 }

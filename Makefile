@@ -23,3 +23,5 @@ boid.o: boid.cc boid.h
 view.o: view.cc view.h
 	$(CC) $(CFLAGS) -c view.cc
 
+clean:
+	rm $(TARGET) $(LIB)
