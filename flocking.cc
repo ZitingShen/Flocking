@@ -67,7 +67,7 @@ void init() {
   glColor3f(0.0, 0.0, 0.0);
   // initialise a flock of boid
   A_FLOCK = list_new();
-  A_GOAL.pos = zero_vec;
+  A_GOAL.pos = glm::vec4(0, 0, 0, 1);
   srand(time(NULL));
   init_a_flock(A_FLOCK);
   init_background(SQUARES_POS);
