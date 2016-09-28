@@ -15,10 +15,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define PARTNER_RADIUS            2.0
+#define PARTNER_RADIUS            20.0
 #define DEFAULT_FLOCK_SIZE        20
 
-#define SEPARATION_WEIGHT         ((float) 0.005)
+#define SEPARATION_WEIGHT         ((float) 0.008)
 #define ALIGNMENT_WEIGHT          ((float) 0.002)
 #define COHESION_WEIGHT           ((float) 0.003)
 #define ATTRACTION_WEIGHT         ((float) 0.1)
