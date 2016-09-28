@@ -25,8 +25,6 @@
 #define DETERRENCE_WEIGHT         ((float) 1.0) // this should be the most significant weight
 #define AVOIDANCE_WEIGHT          ((float) 0.8) // this should be significant as well
 
-#define VERTICES_PER_BOID         4
-#define DIMENSIONS                3
 
 #define SPAWN_CUBE_LENGTH         50.0
 const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,0.0,1);
@@ -35,7 +33,7 @@ const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
 const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,10.0,0,0); //initial speed parallel with y-axis
 
 #define BOID_SIZE                 5
-const GLfloat A_BOID[VERTICES_PER_BOID][DIMENSIONS] = 
+const GLfloat A_BOID[][3] = 
             {{0, 0, 0}, // position of the centroid
             {0, BOID_SIZE*2, 0}, // position of the head
             {-BOID_SIZE, -BOID_SIZE, 0}, // position of the left vertex

@@ -171,8 +171,8 @@ void draw_a_flock(List* a_flock){
   NODE* current = a_flock->head;
   BOID* some_boid = NULL;
 
-  glEnableClientState(GL_VERTEX_ARRAY);
   glColor3f(0.0, 0.0, 0.0);
+  glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_BOID);
 
   for (int i = 0; i < a_flock->length; i++){

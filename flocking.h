@@ -17,9 +17,6 @@
 #include "view.h"
 #include "boid.h"
 
-#define BG_SIDE_LENGTH            20000
-#define BG_SQUARE_NUM             50
-
 void init();
 void draw_cube();
 void reshape(GLFWwindow* window, int w, int h);
