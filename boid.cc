@@ -128,8 +128,8 @@ void add_a_boid(List* a_flock){
   glm::vec4 pos;
   if (a_flock->length == 0) {
     glm::vec4 pos;
-    pos.x = (rand() % default_cube_length) - half_cube_length; 
-    pos.y = (rand() % default_cube_length) - half_cube_length; 
+    pos.x = (rand() % default_cube_length) - half_cube_length;
+    pos.y = (rand() % default_cube_length) - half_cube_length;
     pos.z = (rand() % default_cube_length) - half_cube_length;
     pos.w = 1;
     list_insert(a_flock, new_boid(SPAWN_VELOCITY, PARTNER_RADIUS, pos), 0);
@@ -138,12 +138,13 @@ void add_a_boid(List* a_flock){
 
   BOID* target = (BOID*)list_get(a_flock, rand() % a_flock->length);
   // spawning within the partner radius of the target
-  pos.x = target->pos.x + (rand() % default_cube_length) - half_cube_length; 
-  pos.y = target->pos.y + (rand() % default_cube_length) - half_cube_length; 
-  pos.z = target->pos.z + (rand() % default_cube_length) - half_cube_length; 
+  pos.x = target->pos.x + (rand() % default_cube_length) - half_cube_length;
+  pos.y = target->pos.y + (rand() % default_cube_length) - half_cube_length;
+  pos.z = target->pos.z + (rand() % default_cube_length) - half_cube_length;
   pos.w = 1;
 
-  list_insert(a_flock, new_boid(target->velocity, PARTNER_RADIUS, pos), 0);
+  list_insert(a_flock, new_boid(randomise_velocity(target->velocity),
+                                PARTNER_RADIUS, pos), 0);
 }
 
 void remove_a_boid(List* a_flock){
@@ -178,7 +179,7 @@ void draw_a_flock(List* a_flock){
 
   for (int i = 0; i < a_flock->length; i++){
     some_boid = (BOID*)(current->data);
-    
+
     glm::vec4 rotate_normal = glm::normalize(some_boid->velocity);
     GLfloat rotate_matrix[16] = {1, 0, 0, rotate_normal.x,
                                  0, 1, 0, rotate_normal.y,
@@ -207,4 +208,19 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w){
     ((BOID*)(current->data))->velocity += v_modifier;
     current = current->next;
   }
+}
+
+glm::vec4 randomise_velocity(glm::vec4 raw_v){
+  glm::vec4 new_velocity;
+
+  new_velocity = glm::rotateX(raw_v,
+                       (float)(rand()%(2*RANDOMISE_V_FACTOR)-RANDOMISE_V_FACTOR));
+
+  new_velocity = glm::rotateY(raw_v,
+                       (float)(rand()%(2*RANDOMISE_V_FACTOR)-RANDOMISE_V_FACTOR));
+
+  new_velocity = glm::rotateZ(raw_v,
+                       (float)(rand()%(2*RANDOMISE_V_FACTOR)-RANDOMISE_V_FACTOR));
+
+  return new_velocity;
 }
