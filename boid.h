@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
 #ifdef __APPLE__
 #include <GLFW/glfw3.h>
 #include <OpenGL/glu.h>
@@ -13,6 +14,7 @@
 #include <GLFW/glfw3.h>
 #include <GL/glu.h>
 #endif
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -49,12 +51,6 @@ typedef struct _boid{
   glm::vec4 velocity;              // also determines PA direction; and the degrees of rotation
   float partner_radius;           // the radius within which it looks for partners
 } BOID;
-
-typedef struct _goal{
-  glm::vec4 pos;
-  glm::vec4 velocity;
-
-} GOAL;
 
 typedef struct _predator{
   glm::vec4 pos;
