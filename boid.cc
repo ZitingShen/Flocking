@@ -1,13 +1,16 @@
 #include "boid.h"
 
-
-BOID* new_boid(glm::vec4 velocity, float radius, float pos[3]){
+BOID* new_boid(glm::vec4 velocity, float radius){
   BOID* a_boid = new BOID;
-  a_boid->translation = glm::make_mat4(identity_m);
-  a_boid->translation[3][0] = pos[0];
-  a_boid->translation[3][1] = pos[1];
-  a_boid->translation[3][2] = pos[2];
-  a_boid->init_pos = SPAWN_POSITION;    // the relative point to translation and rotation
+  a_boid->pos = SPAWN_POSITION;
+  a_boid->velocity = velocity;
+  a_boid->partner_radius = radius;
+  return a_boid;
+}
+
+BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos){
+  BOID* a_boid = new BOID;
+  a_boid->pos = pos;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
   return a_boid;
@@ -15,8 +18,7 @@ BOID* new_boid(glm::vec4 velocity, float radius, float pos[3]){
 
 bool is_partner(BOID* source, BOID* target){
   return source->partner_radius >=
-         glm::distance(glm::dot(source->translation, source->init_pos),
-                       glm::dot(target->translation, target->init_pos);
+         glm::distance(source->pos, target->pos);
 }
 
 void update_velocity(List* a_flock, float s_w, float a_w, float c_w){
@@ -36,10 +38,9 @@ void update_velocity(List* a_flock, float s_w, float a_w, float c_w){
         target = (BOID*)(potential_partner->data);
         if (is_partner(source, target)){
           num_of_partners++;
-          s_modifier += (glm::dot(target->translation, target->init_pos)-
-                         glm::dot(source->translation, source->init_pos));//=target-source
+          s_modifier += target->pos - source->pos;//=target-source
           a_modifier += target->velocity;
-          c_modifier += glm::dot(target->translation, target->init_pos);
+          c_modifier += target->pos;
         }
         potential_partner=potential_partner->next; //the next potential partner
     }
@@ -58,23 +59,19 @@ void update_velocity(List* a_flock, float s_w, float a_w, float c_w){
   }
 }
 
-void update_translation(List* a_flock){
+void update_pos(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0) return;
-  glm::mat4 change = glm::make_mat4(identity_m);
   BOID* a_boid;
   NODE* current = a_flock->head;
   while (current != NULL){
     a_boid=((BOID*)(current->data));
-    change[3][0] = a_boid->velocity[0];
-    change[3][1] = a_boid->velocity[1];
-    change[3][2] = a_boid->velocity[3];
-    a_boid->translation = glm::dot(change, a_boid->translation);
+    a_boid->pos += a_boid->velocity;
     current=current->next;
   }
 }
 
 glm::vec4 get_current_pos(BOID* a_boid){
-  return glm::dot(a_boid->translation, a_boid->init_pos); //order matters
+  return a_boid->pos; //order matters
 }
 
 glm::vec4 flock_centroid(List* a_flock){
@@ -91,6 +88,7 @@ glm::vec4 flock_centroid(List* a_flock){
 glm::vec4 mid_point(List* a_flock, GOAL* a_goal){
   if (a_flock == NULL || a_flock->length == 0) return zero_vec;
   return (flock_centroid(a_flock)+(a_goal->pos))*(0.5f);
+  //return (flock_centroid(a_flock)+(a_goal->pos));
 }
 
 glm::vec4 get_u(List* a_flock, GOAL* a_goal){
@@ -119,18 +117,26 @@ float flock_radius(List* a_flock){
 
 void add_a_boid(List* a_flock){
   if (a_flock == NULL){return;}  // use init_a_flock to create a new flock
-  BOID* target = (BOID*)list_get(a_flock, rand() % a_flock->length);
-  float new_pos[3];
-  // spwaning within the partner radius of the target
-  int modifier_upper_bond = static_cast<int>((target->partner_radius)/(glm::sqrt(2)));
-  int half_moifdier       = static_cast<int>(modifier_upper_bond);
-  for (int i=0; i<3; i++){
-    srand(time(NULL));
-    new_pos[i] = target->translation[3][i]
-               + (rand() % half_moifdier) - modifier_upper_bond;
+  int default_cube_length = DEFAULT_FLOCKING_RADIUS/glm::sqrt(2);
+  int half_cube_length    = default_cube_length/2;
+  glm::vec4 pos;
+  if (a_flock->length == 0) {
+    glm::vec4 pos;
+    pos.x = (rand() % default_cube_length) - half_cube_length; 
+    pos.y = (rand() % default_cube_length) - half_cube_length; 
+    pos.z = (rand() % default_cube_length) - half_cube_length;
+    list_insert(a_flock, new_boid(SPAWN_VELOCITY, DEFAULT_FLOCKING_RADIUS, pos), 0);
+    return;
   }
 
-  list_insert(a_flock, new_boid(target->velocity, target->partner_radius, new_pos), 0);
+  BOID* target = (BOID*)list_get(a_flock, rand() % a_flock->length);
+  // spawning within the partner radius of the target
+  pos.x = target->pos.x + (rand() % default_cube_length) - half_cube_length; 
+  pos.y = target->pos.y + (rand() % default_cube_length) - half_cube_length; 
+  pos.z = target->pos.z + (rand() % default_cube_length) - half_cube_length; 
+  pos.w = 1;
+
+  list_insert(a_flock, new_boid(target->velocity, target->partner_radius, pos), 0);
 }
 
 void remove_a_boid(List* a_flock){
@@ -139,25 +145,18 @@ void remove_a_boid(List* a_flock){
   list_delete(a_flock, rand() % a_flock->length);
 }
 
-void init_a_flock(List* a_flock, glm::vec4 v,
-                   float partner_radius, float cube_length, int num){
-  if (a_flock == NULL){
-    a_flock = new List;
-  }
+void init_a_flock(List* a_flock){
+  int default_cube_length = SPAWN_CUBE_LENGTH;
+  int half_cube_length = default_cube_length/2;
 
-  float half_l = 0.5*cube_length;
-
-  for (int i=0; i<num; i++){
+  for (int i = 0; i < DEFAULT_FLOCK_SIZE; i++){
     BOID* a_boid= new BOID;
-    a_boid->init_pos = SPAWN_POSITION;
-    a_boid->velocity = v;
-    a_boid->partner_radius = partner_radius;
-    for (int j=0; j<3; j++){
-      srand(time(NULL));
-      a_boid->translation = glm::make_mat4(identity_m);
-      a_boid->translation[3][i] =
-          a_boid->init_pos[j] + (rand() % static_cast<int>(half_l)) - cube_length; //randomise the position
-    }
+    a_boid->pos = SPAWN_POSITION;
+    a_boid->velocity = SPAWN_VELOCITY;
+    a_boid->partner_radius = DEFAULT_FLOCKING_RADIUS;
+    a_boid->pos.x += (rand() % default_cube_length) - half_cube_length;
+    a_boid->pos.y += (rand() % default_cube_length) - half_cube_length;
+    a_boid->pos.z += (rand() % default_cube_length) - half_cube_length;
     list_insert(a_flock, a_boid, 0);
   }
 }

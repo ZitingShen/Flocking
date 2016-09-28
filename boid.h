@@ -9,31 +9,36 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-const glm::vec4 SPAWN_POSITION = glm::vec4(2400.0,150.0,1200.0,1);
+#define DEFAULT_FLOCKING_RADIUS   30.0
+#define DEFAULT_FLOCK_SIZE        20
+#define DEFAULT_SEPARATION_WEIGHT 0.3
+#define DEFAULT_ALIGNMENT_WEIGHT  0.4
+#define DEFAULT_COHESION_WEIGHT   0.5
+#define DEFAULT_ATTRACTION_WEIGHT 0.1
+#define DEFAULT_DETERRENCE_WEIGHT 1.0 // this should be the most significant weight
+#define DEFUALT_AVOIDANCE_WEIGHT  0.8 // this should be significant as well
+
+#define SPAWN_CUBE_LENGTH 50.0
+const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,0.0,1);
 const glm::vec4 zero_vec = glm::vec4(0.0,0.0,0.0,0.0);
-const float identity_m[16] = {1,0,0,0,
-                              0,1,0,0,
-                              0,0,1,0,
-                              0,0,0,1}; // stored column wise
+const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
+const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,10.0,0,0); //initial speed parallel with y-axis
 
 typedef struct _boid{
-  glm::mat4 translation;
   //glm::mat4 left_rotation;       // TODO: for flapping extra credit       
   //glm::mat4 right_rotation;
-  glm::vec4 init_pos;
+  glm::vec4 pos;
   glm::vec4 velocity;              // also determines PA direction; and the degrees of rotation
   float partner_radius;           // the radius within which it looks for partners
 } BOID;
 
 typedef struct _goal{
   glm::vec4 pos;
-  //glm::vec4 velocity;
+  glm::vec4 velocity;
 } GOAL;
 
 typedef struct _predator{
-  glm::mat4 translation;
-  glm::mat4 rotation;
-  glm::vec4 spwan_pos;
+  glm::vec4 pos;
   glm::vec4 velocity;
   float deterrence_range;
   float attack_range;
@@ -43,8 +48,8 @@ typedef struct _obstacle{
   glm::vec4 pos;
   float avoidance_range;
 } OBSTACLE;
-
-BOID* new_boid(glm::vec4 velocity, float radius, float pos[3]);
+BOID* new_boid(glm::vec4 velocity, float radius);
+BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos);
 
 bool is_partner(BOID* source, BOID* target);
 void update_velocity(List* a_flock, float s_w, float a_w, float c_w);
@@ -62,8 +67,7 @@ float flock_radius(List* a_flock);
 void add_a_boid(List* a_flock);
 void remove_a_boid(List* a_flock);
 
-void init_a_flock(List* a_flock, glm::vec4 velocity,
-                  float partner_radius, float cube_length, int num);
+void init_a_flock(List* a_flock);
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w);
 
