@@ -113,9 +113,9 @@ float flock_radius(List* a_flock){
   NODE* current = a_flock->head;
   glm::vec4 centroid = flock_centroid(a_flock);
   while (current != NULL){
-    dis = glm::distance(get_current_pos((BOID*)(current->data)), centroid);
-    max_r = max_r<dis?dis:max_r;
-    current=current->next;
+    dis = glm::distance(get_current_pos((BOID*) (current->data)), centroid);
+    max_r = max_r < dis ? dis : max_r;
+    current = current->next;
   }
   return max_r;
 }
@@ -130,6 +130,7 @@ void add_a_boid(List* a_flock){
     pos.x = (rand() % default_cube_length) - half_cube_length; 
     pos.y = (rand() % default_cube_length) - half_cube_length; 
     pos.z = (rand() % default_cube_length) - half_cube_length;
+    pos.w = 1;
     list_insert(a_flock, new_boid(SPAWN_VELOCITY, PARTNER_RADIUS, pos), 0);
     return;
   }

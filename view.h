@@ -13,7 +13,7 @@
 
 #define TOWER_HEIGHT              200
 #define CAMERA_NEAR               0.1
-#define CAMERA_FAR                (TOWER_HEIGHT*2)
+#define CAMERA_FAR                (TOWER_HEIGHT*200)
 
 #define BG_SQUARE_SIDE            20.0
 #define BG_SQUARE_NUM             49   // must be an odd number

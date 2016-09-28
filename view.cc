@@ -8,7 +8,7 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
   float max_distance =  flock_radius(flock);
   float distance = get_d(flock, goal);
   glm::vec4 camera_pos;
-  glm::vec4 flock_direction = get_u(flock, goal);
+  glm::vec4 flock_direction = glm::normalize(get_u(flock, goal));
   switch(viewmode) {
     case DEFAULT:
     glMatrixMode(GL_PROJECTION);
@@ -29,11 +29,12 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    std::cout << flock_direction.w << std::endl;
     camera_pos = center
-                 + glm::normalize(-flock_direction)*(distance + 5*max_distance)
+                 - flock_direction*(distance + 5*max_distance)*((float)0.5)
                  + glm::vec4(0, 0, 1, 0)*(distance + max_distance);
     gluLookAt(camera_pos.x, camera_pos.y, camera_pos.z, midpoint.x, midpoint.y, 
-              midpoint.z, 0, 1, 0);
+              midpoint.z, 0, 0, 1);
     break;
 
     case SIDE: {
@@ -43,13 +44,13 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glm::vec3 v(flock_direction);
-    glm::vec4 side_v = glm::vec4(glm::cross(v, glm::vec3(0, 0, 1)), 0.0);
+    glm::vec3 v3(flock_direction);
+    glm::vec4 side_v = glm::vec4(glm::cross(v3, glm::vec3(0, 0, 1)), 0.0);
     camera_pos = midpoint 
-                 + glm::normalize(side_v)*(distance + 2*max_distance);
+                 + glm::normalize(side_v)*(distance + 2*max_distance)
                  + glm::vec4(0, 0, 1, 0)*(distance + max_distance);
     gluLookAt(camera_pos.x, camera_pos.y, camera_pos.z, midpoint.x, midpoint.y, 
-              midpoint.z, 0, 1, 0);
+              midpoint.z, 0, 0, 1);
     }
     break;
     default:
