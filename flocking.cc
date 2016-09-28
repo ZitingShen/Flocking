@@ -6,8 +6,8 @@ void reshape(GLFWwindow* window, int w, int h);
 void framebuffer_resize(GLFWwindow* window, int width, int height);
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
 void move_boids_pos(List* a_flock, GLfloat** boid_poly);
-void generate_poly_vertices(List* a_flock, GLfloat** boid_poly, GOAL* a_goal);
-void draw_boids(GLfloat** boid_poly);
+//void generate_poly_vertices(List* a_flock, GLfloat** boid_poly, GOAL* a_goal);
+void draw_a_flock(List* a_flock);
 
 List* A_FLOCK = NULL;
 GLfloat** BOID_POLY = NULL;
@@ -235,7 +235,41 @@ void draw_cube() {
   glDisableClientState(GL_VERTEX_ARRAY);
 }
 
+void draw_a_flock(List* a_flock){
+  if (a_flock == NULL) return;
+  float speed = glm::length(SPAWN_VELOCITY);
+  glm::vec4 centroid = SPAWN_POSITION;
+  glm::vec4 head = centroid +
+                   (static_cast<float>(BOID_SIZE))*glm::normalize(SPAWN_VELOCITY);
+  glm::vec4 left = glm::vec4(-speed, -0.5*speed,0,1);
+  glm::vec4 right = glm::vec4(speed, -0.5*speed,0,1);
+  glm::vec4 new_centroid, new_head, new_left, new_right;
+  GLfloat vertices[VERTICES_PER_BOID][DIMENSIONS]; // we have four vertices in R3
+  GLfloat colors[3] = {1.0,1.0,1.0}; //using black
+  GLubyte triangleIndices[6] = {0,1,2,
+                                0,1,3}; //drawing two triangles
+  glm::vec3 current_pos, sourcePA, targetPA;
+  NODE* current = a_flock->head;
+  glm::fquat rotation_angle;
+  glm::mat4 rotation_maxtrix;
+  BOID* a_boid = NULL;
 
-void draw_boids(GLfloat** boid_poly){
+  for (int i=0;i<a_flock->length;i++){
+    a_boid = (BOID*)(current->data);
+    //new_centroid = get_current_pos(a_boid); //first vertex
+    sourcePA = glm::vec3(SPAWN_VELOCITY[0], SPAWN_VELOCITY[1], SPAWN_VELOCITY[2]);
+    targetPA = glm::vec3(a_boid->velocity[0], a_boid->velocity[2], a_boid->velocity[2]);
+    rotation_angle = glm::rotation(
+                        glm::normalize(sourcePA),
+                        glm::normalize(targetPA));
+    for (int j=0;j<VERTICES_PER_BOID;j++){
+    
+    }
+    glEnableClientState(GL_COLOR_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
 
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    current = current->next;
+  }
 }
