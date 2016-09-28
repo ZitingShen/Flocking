@@ -2,6 +2,7 @@
 #define BOID_H
 
 #include "list.h"
+#include "goal.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -45,6 +46,7 @@ typedef struct _boid{
 typedef struct _goal{
   glm::vec4 pos;
   glm::vec4 velocity;
+
 } GOAL;
 
 typedef struct _predator{
