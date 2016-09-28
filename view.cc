@@ -70,31 +70,17 @@ void init_background(GLfloat squares_pos[][2]) {
 void draw_background(GLfloat squares_pos[][2]) {
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(4, GL_FLOAT, 0, A_SQUARE);
-  int index = 0;
-  for (int row = 0; row < BG_SQUARE_NUM; row++) {
-    for (int column = 0; column < BG_SQUARE_NUM; column++) {
-      if((row + column) % 2 == 0) {
-        glColor3f(1.0, 0.0, 0.0);
-      } else {
-        glColor3f(0.0, 0.0, 1.0);
-      }
-      glPushMatrix();
-      
-      /*
-      glBegin(GL_QUADS);
-      glVertex3f(0, 0, 0);
-      glVertex3f(BG_SQUARE_SIDE, 0, 0);
-      glVertex3f(BG_SQUARE_SIDE, BG_SQUARE_SIDE, 0);
-      glVertex3f(0, BG_SQUARE_SIDE, 0);
-      glEnd();
-      */
-      glTranslatef(squares_pos[index][0], squares_pos[index][1], -10);
-      //if (row == 25 && column == 25)
-      //  std::cout << squares_pos[index][0] << " " << squares_pos[index][1] << std::endl;
-      glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_SQUARE_VERTICES);
-      glPopMatrix();
-      index++;
+  for (int i = 0; i < BG_SQUARE_NUM*BG_SQUARE_NUM; i++) {
+    if(i % 2 == 0) {
+      glColor3f(1.0, 0.0, 0.0);
+    } else {
+      glColor3f(0.0, 0.0, 1.0);
     }
+    glPushMatrix();
+      
+    glTranslatef(squares_pos[i][0], squares_pos[i][1], 10);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+    glPopMatrix();
   }
   glDisableClientState(GL_VERTEX_ARRAY);
 }

@@ -13,15 +13,13 @@
 
 #define TOWER_HEIGHT              100
 
-#define BG_SQUARE_SIDE            10.0
-#define BG_SQUARE_NUM             50
+#define BG_SQUARE_SIDE            2.0
+#define BG_SQUARE_NUM             10
 const GLfloat A_SQUARE[][3] = 
             {{0, 0, 0},
             {BG_SQUARE_SIDE, 0, 0},
             {BG_SQUARE_SIDE, BG_SQUARE_SIDE, 0},
             {0, BG_SQUARE_SIDE, 0}};
-const GLubyte A_SQUARE_VERTICES[6] = {0, 1, 2,
-                                      0, 2, 3};
 
 typedef enum viewMode {DEFAULT, TRAILING, SIDE} viewMode;
 
