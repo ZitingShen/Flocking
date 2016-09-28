@@ -15,8 +15,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define PARTNER_RADIUS           2.0
-#define DEFAULT_FLOCK_SIZE       20
+#define PARTNER_RADIUS            2.0
+#define DEFAULT_FLOCK_SIZE        20
 
 #define SEPARATION_WEIGHT         ((float) 0.005)
 #define ALIGNMENT_WEIGHT          ((float) 0.002)
@@ -28,11 +28,20 @@
 #define VERTICES_PER_BOID         4
 #define DIMENSIONS                3
 
-#define SPAWN_CUBE_LENGTH 50.0
+#define SPAWN_CUBE_LENGTH         50.0
 const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,0.0,1);
 const glm::vec4 zero_vec = glm::vec4(0.0,0.0,0.0,0.0);
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
 const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,10.0,0,0); //initial speed parallel with y-axis
+
+#define BOID_SIZE                 5
+const GLfloat A_BOID[VERTICES_PER_BOID][DIMENSIONS] = 
+            {{0, 0, 0}, // position of the centroid
+            {0, BOID_SIZE*2, 0}, // position of the head
+            {-BOID_SIZE, -BOID_SIZE, 0}, // position of the left vertex
+            {BOID_SIZE, -BOID_SIZE, 0}}; // position of the right vertex;
+const GLubyte A_BOID_VERTICES[6] = {0, 1, 2,
+                                    0, 3, 1}; //drawing two triangles;
 
 typedef struct _boid{
   //glm::mat4 left_rotation;       // TODO: for flapping extra credit       
@@ -79,8 +88,7 @@ void remove_a_boid(List* a_flock);
 void init_a_flock(List* a_flock);
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w);
-void draw_a_flock(List* a_flock, GLfloat prototype[VERTICES_PER_BOID][DIMENSIONS], 
-                  GLubyte* vertices);
+void draw_a_flock(List* a_flock);
 /* To DO */
 void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, float p_w);
 void apply_obstacle_avoidance(List* a_flock, OBSTACLE* an_obstable, float o_w);

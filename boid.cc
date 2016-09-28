@@ -166,15 +166,14 @@ void init_a_flock(List* a_flock){
   }
 }
 
-void draw_a_flock(List* a_flock, GLfloat prototype[VERTICES_PER_BOID][DIMENSIONS],
-                  GLubyte* vertices){
+void draw_a_flock(List* a_flock){
   if (a_flock == NULL) return;
   NODE* current = a_flock->head;
   BOID* some_boid = NULL;
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glColor3f(0.0, 0.0, 0.0);
-  glVertexPointer(3, GL_FLOAT, 0, prototype);
+  glVertexPointer(3, GL_FLOAT, 0, A_BOID);
 
   for (int i = 0; i < a_flock->length; i++){
     some_boid = (BOID*)(current->data);
@@ -192,7 +191,7 @@ void draw_a_flock(List* a_flock, GLfloat prototype[VERTICES_PER_BOID][DIMENSIONS
     glPushMatrix();
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
     //glMultMatrixf(rotate_matrix);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, vertices);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_BOID_VERTICES);
     glPopMatrix();
     current = current->next;
   }
