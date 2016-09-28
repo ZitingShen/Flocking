@@ -17,12 +17,7 @@
 #include "view.h"
 #include "boid.h"
 
-#define DIMENSIONS                3
 #define BOID_SIZE                 5
-
-#define VERTICES_PER_BOID         4
-
-#define TOWER_HEIGHT     		  100
 
 #define BG_SIDE_LENGTH			  20000
 #define BG_SQUARE_NUM			  50

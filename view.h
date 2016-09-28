@@ -11,10 +11,12 @@
 #include <glm/glm.hpp>
 #include "boid.h"
 
+#define TOWER_HEIGHT     		  100
+
 typedef enum viewMode {DEFAULT, TRAILING, SIDE} viewMode;
 
 void changeView(viewMode viewmode, int width, int height, List *flock, 
-                GOAL *goal, int tower_h);
+                GOAL *goal);
 void initBackground();
 void drawBackground();
 

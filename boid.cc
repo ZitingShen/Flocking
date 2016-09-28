@@ -1,4 +1,5 @@
 #include "boid.h"
+#include <iostream>
 
 BOID* new_boid(glm::vec4 velocity, float radius){
   BOID* a_boid = new BOID;
@@ -21,41 +22,45 @@ bool is_partner(BOID* source, BOID* target){
          glm::distance(source->pos, target->pos);
 }
 
-void update_velocity(List* a_flock, float s_w, float a_w, float c_w){
+void update_velocity(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0) return;
   NODE* current_boid = a_flock->head;
-  NODE* potential_partner = a_flock->head;
-  glm::vec4 s_modifier = zero_vec;
-  glm::vec4 a_modifier = zero_vec;
-  glm::vec4 c_modifier = zero_vec;
-  int num_of_partners = 0;
+  NODE* potential_partner;
+  glm::vec4 s_modifier, a_modifier, c_modifier;
+  int num_of_partners;
 
   BOID* source = NULL;
   BOID* target = NULL;
   while (current_boid != NULL){
-    while (potential_partner != NULL && potential_partner != current_boid){
-        source = (BOID*)(current_boid->data);
-        target = (BOID*)(potential_partner->data);
-        if (is_partner(source, target)){
-          num_of_partners++;
-          s_modifier += target->pos - source->pos;//=target-source
-          a_modifier += target->velocity;
-          c_modifier += target->pos;
-        }
-        potential_partner=potential_partner->next; //the next potential partner
-    }
-    s_modifier = s_w*(s_modifier/(float)num_of_partners);
-    a_modifier = a_w*(a_modifier/(float)num_of_partners);
-    c_modifier = c_w*(c_modifier/(float)num_of_partners);
-
-    source->velocity += (s_modifier+a_modifier+c_modifier);
-
-    current_boid = current_boid->next;//go on updating another boid
-    potential_partner = a_flock->head;
     num_of_partners = 0; //reset for the next boid
     s_modifier = zero_vec;
     a_modifier = zero_vec;
     c_modifier = zero_vec;
+    potential_partner = a_flock->head;
+    num_of_partners = 0;
+    while (potential_partner != NULL){
+      if (potential_partner == current_boid) {
+        potential_partner = potential_partner->next;
+        continue;
+      }
+      source = (BOID*)(current_boid->data);
+      target = (BOID*)(potential_partner->data);
+      if (is_partner(source, target)){
+        num_of_partners++;
+        s_modifier += source->pos - target->pos;
+        a_modifier += target->velocity;
+        c_modifier += target->pos;
+      }
+      potential_partner=potential_partner->next;
+    }
+    if (num_of_partners != 0) {
+      s_modifier = SEPARATION_WEIGHT*(s_modifier/(float)num_of_partners);
+      a_modifier = ALIGNMENT_WEIGHT*(a_modifier/(float)num_of_partners - source->velocity);
+      c_modifier = COHESION_WEIGHT*(c_modifier/(float)num_of_partners - source->pos);
+    }
+
+    source->velocity += (s_modifier+a_modifier+c_modifier);
+    current_boid = current_boid->next;
   }
 }
 
@@ -64,9 +69,9 @@ void update_pos(List* a_flock){
   BOID* a_boid;
   NODE* current = a_flock->head;
   while (current != NULL){
-    a_boid=((BOID*)(current->data));
-    a_boid->pos += a_boid->velocity;
-    current=current->next;
+    a_boid = (BOID*)(current->data);
+    a_boid->pos += a_boid->velocity*((float)0.01);
+    current = current->next;
   }
 }
 
@@ -117,7 +122,7 @@ float flock_radius(List* a_flock){
 
 void add_a_boid(List* a_flock){
   if (a_flock == NULL){return;}  // use init_a_flock to create a new flock
-  int default_cube_length = DEFAULT_FLOCKING_RADIUS/glm::sqrt(2);
+  int default_cube_length = PARTNER_RADIUS/glm::sqrt(2);
   int half_cube_length    = default_cube_length/2;
   glm::vec4 pos;
   if (a_flock->length == 0) {
@@ -125,7 +130,7 @@ void add_a_boid(List* a_flock){
     pos.x = (rand() % default_cube_length) - half_cube_length; 
     pos.y = (rand() % default_cube_length) - half_cube_length; 
     pos.z = (rand() % default_cube_length) - half_cube_length;
-    list_insert(a_flock, new_boid(SPAWN_VELOCITY, DEFAULT_FLOCKING_RADIUS, pos), 0);
+    list_insert(a_flock, new_boid(SPAWN_VELOCITY, PARTNER_RADIUS, pos), 0);
     return;
   }
 
@@ -153,12 +158,45 @@ void init_a_flock(List* a_flock){
     BOID* a_boid= new BOID;
     a_boid->pos = SPAWN_POSITION;
     a_boid->velocity = SPAWN_VELOCITY;
-    a_boid->partner_radius = DEFAULT_FLOCKING_RADIUS;
+    a_boid->partner_radius = PARTNER_RADIUS;
     a_boid->pos.x += (rand() % default_cube_length) - half_cube_length;
     a_boid->pos.y += (rand() % default_cube_length) - half_cube_length;
     a_boid->pos.z += (rand() % default_cube_length) - half_cube_length;
     list_insert(a_flock, a_boid, 0);
   }
+}
+
+void draw_a_flock(List* a_flock, GLfloat prototype[VERTICES_PER_BOID][DIMENSIONS],
+                  GLubyte* vertices){
+  if (a_flock == NULL) return;
+  NODE* current = a_flock->head;
+  BOID* some_boid = NULL;
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glColor3f(0.0, 0.0, 0.0);
+  glVertexPointer(3, GL_FLOAT, 0, prototype);
+
+  for (int i = 0; i < a_flock->length; i++){
+    some_boid = (BOID*)(current->data);
+    
+    glm::vec4 rotate_normal = glm::normalize(some_boid->velocity);
+    GLfloat rotate_matrix[16] = {1, 0, 0, rotate_normal.x,
+                                 0, 1, 0, rotate_normal.y,
+                                 0, 0, 1, rotate_normal.z,
+                                 0, 0, 0, 1};
+    //if (i == 0) {
+    //  std::cout << some_boid->pos.x << " " << some_boid->pos.y << " " << some_boid->pos.z << std::endl;
+    //  glm::vec4 midpoint = mid_point(A_FLOCK, &A_GOAL);
+    //  std::cout << midpoint.x << " " << midpoint.y << " " << midpoint.z << std::endl;
+    //}
+    glPushMatrix();
+    glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
+    //glMultMatrixf(rotate_matrix);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, vertices);
+    glPopMatrix();
+    current = current->next;
+  }
+  glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w){

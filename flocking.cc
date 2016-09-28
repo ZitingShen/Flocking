@@ -6,16 +6,15 @@ void reshape(GLFWwindow* window, int w, int h);
 void framebuffer_resize(GLFWwindow* window, int width, int height);
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
 void move_boids_pos(List* a_flock, GLfloat** boid_poly);
-void draw_a_flock(List* a_flock);
 
 List* A_FLOCK = NULL;
 
 GOAL A_GOAL;
 GLfloat A_BOID[VERTICES_PER_BOID][DIMENSIONS] = 
             {{0, 0, 0}, // position of the original centroid
-            {0, 10, 0}, // position of the original head
-            {-5, -5, 0}, // position of the original left vertex
-            {5, -5, 0}}; // position of the original right vertex;
+            {0, BOID_SIZE*2, 0}, // position of the original head
+            {-BOID_SIZE, -BOID_SIZE, 0}, // position of the original left vertex
+            {BOID_SIZE, -BOID_SIZE, 0}}; // position of the original right vertex;
 GLubyte A_BOID_VERTICES[6] = {0, 1, 2,
                               0, 3, 1}; //drawing two triangles;
 int IS_PAUSED = GLFW_FALSE;
@@ -56,18 +55,19 @@ int main(int argc, char** argv) {
   glShadeModel(GL_FLAT);
 
   glfwGetWindowSize(window, &WIDTH, &HEIGHT);
-  changeView(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL, TOWER_HEIGHT);
+  changeView(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL);
 
   while(!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
 
     if(!IS_PAUSED || PAUSE_TIME > 0) {
-      //move_boids_pos(flock, boid_poly);
+      update_velocity(A_FLOCK);
+      update_pos(A_FLOCK);
       //moveGoal(goal);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
         //drawBackground();
-        draw_a_flock(A_FLOCK);
+        draw_a_flock(A_FLOCK, A_BOID, A_BOID_VERTICES);
         //drawBackground(BG_SQUARE_NUM, bg_vertices, bg_colors);
         //drawFlock(boids_vertices);
         //drawFlock();
@@ -100,7 +100,7 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  changeView(VIEW_MODE, w, h, A_FLOCK, &A_GOAL, TOWER_HEIGHT);
+  changeView(VIEW_MODE, w, h, A_FLOCK, &A_GOAL);
 }
 
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
@@ -127,37 +127,37 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
       case GLFW_KEY_V:
       VIEW_MODE  = DEFAULT;
       glfwGetWindowSize(w, &WIDTH, &HEIGHT);
-      changeView(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL, TOWER_HEIGHT);
+      changeView(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL);
       break;
 
       case GLFW_KEY_T:
       VIEW_MODE = TRAILING;
       glfwGetWindowSize(w, &WIDTH, &HEIGHT);
-      changeView(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL, TOWER_HEIGHT);
+      changeView(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL);
       break;
 
       case GLFW_KEY_G:
       VIEW_MODE = SIDE;
       glfwGetWindowSize(w, &WIDTH, &HEIGHT);
-      changeView(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL, TOWER_HEIGHT);
+      changeView(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL);
       break;
 
-      case GLFW_KEY_A:
+      case GLFW_KEY_A: // decrease x velocity
       break;
 
-      case GLFW_KEY_D:
+      case GLFW_KEY_D: // increase x velocity
       break;
 
-      case GLFW_KEY_W:
+      case GLFW_KEY_W: // increase y velocity
       break;
 
-      case GLFW_KEY_S:
+      case GLFW_KEY_S: // decrease y velocity
       break;
 
-      case GLFW_KEY_Z:
+      case GLFW_KEY_Z: // increase z velocity
       break;
 
-      case GLFW_KEY_X:
+      case GLFW_KEY_X: // decrease z velocity
       break;
 
       case GLFW_KEY_Q:
@@ -173,36 +173,4 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
       break;
     }
   }
-}
-
-void draw_a_flock(List* a_flock){
-  if (a_flock == NULL) return;
-  NODE* current = a_flock->head;
-  BOID* some_boid = NULL;
-
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glColor3f(0.0, 0.0, 0.0);
-  glVertexPointer(3, GL_FLOAT, 0, A_BOID);
-
-  for (int i = 0; i < a_flock->length; i++){
-    some_boid = (BOID*)(current->data);
-    
-    glm::vec4 rotate_normal = glm::normalize(some_boid->velocity);
-    GLfloat rotate_matrix[16] = {1, 0, 0, rotate_normal.x,
-                                 0, 1, 0, rotate_normal.y,
-                                 0, 0, 1, rotate_normal.z,
-                                 0, 0, 0, 1};
-    if (i == 0) {
-      std::cout << some_boid->pos.x << " " << some_boid->pos.y << " " << some_boid->pos.z << std::endl;
-      glm::vec4 midpoint = mid_point(A_FLOCK, &A_GOAL);
-      std::cout << midpoint.x << " " << midpoint.y << " " << midpoint.z << std::endl;
-    }
-    glPushMatrix();
-    glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
-    //glMultMatrixf(rotate_matrix);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_BOID_VERTICES);
-    glPopMatrix();
-    current = current->next;
-  }
-  glDisableClientState(GL_VERTEX_ARRAY);
 }

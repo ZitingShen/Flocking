@@ -5,18 +5,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
+#ifdef __APPLE__
+#include <GLFW/glfw3.h>
+#include <OpenGL/glu.h>
+#else
+#include <GLFW/glfw3.h>
+#include <GL/glu.h>
+#endif
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define DEFAULT_FLOCKING_RADIUS   30.0
-#define DEFAULT_FLOCK_SIZE        20
-#define DEFAULT_SEPARATION_WEIGHT 0.3
-#define DEFAULT_ALIGNMENT_WEIGHT  0.4
-#define DEFAULT_COHESION_WEIGHT   0.5
-#define DEFAULT_ATTRACTION_WEIGHT 0.1
-#define DEFAULT_DETERRENCE_WEIGHT 1.0 // this should be the most significant weight
-#define DEFUALT_AVOIDANCE_WEIGHT  0.8 // this should be significant as well
+#define PARTNER_RADIUS           2.0
+#define DEFAULT_FLOCK_SIZE       20
+
+#define SEPARATION_WEIGHT         ((float) 0.005)
+#define ALIGNMENT_WEIGHT          ((float) 0.002)
+#define COHESION_WEIGHT           ((float) 0.003)
+#define ATTRACTION_WEIGHT         ((float) 0.1)
+#define DETERRENCE_WEIGHT         ((float) 1.0) // this should be the most significant weight
+#define AVOIDANCE_WEIGHT          ((float) 0.8) // this should be significant as well
+
+#define VERTICES_PER_BOID         4
+#define DIMENSIONS                3
 
 #define SPAWN_CUBE_LENGTH 50.0
 const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,0.0,1);
@@ -52,8 +62,8 @@ BOID* new_boid(glm::vec4 velocity, float radius);
 BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos);
 
 bool is_partner(BOID* source, BOID* target);
-void update_velocity(List* a_flock, float s_w, float a_w, float c_w);
-void update_translation(List* a_flock);
+void update_velocity(List* a_flock);
+void update_pos(List* a_flock);
 
 
 glm::vec4 get_current_pos(BOID* a_boid);
@@ -63,14 +73,14 @@ glm::vec4 get_u(List* a_flock, GOAL* a_goal);
 float get_d(List* a_flock, GOAL* a_goal);
 float flock_radius(List* a_flock);
 
-// assuming flocks are global variables, therefore no need to return
 void add_a_boid(List* a_flock);
 void remove_a_boid(List* a_flock);
 
 void init_a_flock(List* a_flock);
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w);
-
+void draw_a_flock(List* a_flock, GLfloat prototype[VERTICES_PER_BOID][DIMENSIONS], 
+                  GLubyte* vertices);
 /* To DO */
 void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, float p_w);
 void apply_obstacle_avoidance(List* a_flock, OBSTACLE* an_obstable, float o_w);
