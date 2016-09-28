@@ -11,11 +11,13 @@
 #include <glm/glm.hpp>
 #include "boid.h"
 
-#define TOWER_HEIGHT              100
+#define TOWER_HEIGHT              200
+#define CAMERA_NEAR               0.1
+#define CAMERA_FAR                (TOWER_HEIGHT*2)
 
-#define BG_SQUARE_SIDE            2.0
-#define BG_SQUARE_NUM             10
-const GLfloat A_SQUARE[][3] = 
+#define BG_SQUARE_SIDE            20.0
+#define BG_SQUARE_NUM             49   // must be an odd number
+const GLfloat A_SQUARE[][3]= 
             {{0, 0, 0},
             {BG_SQUARE_SIDE, 0, 0},
             {BG_SQUARE_SIDE, BG_SQUARE_SIDE, 0},

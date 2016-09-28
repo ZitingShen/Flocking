@@ -13,18 +13,19 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     case DEFAULT:
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, width*1.0/height, 0.1, 1000);
+    gluPerspective(45, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0.01, TOWER_HEIGHT, midpoint.x, midpoint.y, midpoint.z, 
-              0, 0, 1);
+    //gluLookAt(0, 0.01, TOWER_HEIGHT, midpoint.x, midpoint.y, midpoint.z, 
+    //          0, 0, 1);
     //std::cout << midpoint.x << " " << midpoint.y << " " << midpoint.z << std::endl;
+    gluLookAt(0, 0.01, TOWER_HEIGHT, 0, 0, 0, 0, 0, 1);
     break;
 
     case TRAILING:
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(30, width*1.0/height, 0.1, 1000);
+    gluPerspective(30, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -38,7 +39,7 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     case SIDE: {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(40, width*1.0/height, 0.1, 1000);
+    gluPerspective(40, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -69,17 +70,18 @@ void init_background(GLfloat squares_pos[][2]) {
 
 void draw_background(GLfloat squares_pos[][2]) {
   glEnableClientState(GL_VERTEX_ARRAY);
-  glVertexPointer(4, GL_FLOAT, 0, A_SQUARE);
+  glVertexPointer(3, GL_FLOAT, 0, A_SQUARE);
   for (int i = 0; i < BG_SQUARE_NUM*BG_SQUARE_NUM; i++) {
     if(i % 2 == 0) {
-      glColor3f(1.0, 0.0, 0.0);
+      glColor3f(1.0, 0.6, 0.6);
     } else {
-      glColor3f(0.0, 0.0, 1.0);
+      glColor3f(0.6, 0.6, 1.0);
     }
     glPushMatrix();
-      
-    glTranslatef(squares_pos[i][0], squares_pos[i][1], 10);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 6);
+    glTranslatef(squares_pos[i][0], squares_pos[i][1], -10);
+    //std::cout << squares_pos[i][0] << " " << squares_pos[i][1] << std::endl;
+    glPointSize(5);
+    glDrawArrays(GL_QUADS, 0, 4);
     glPopMatrix();
   }
   glDisableClientState(GL_VERTEX_ARRAY);

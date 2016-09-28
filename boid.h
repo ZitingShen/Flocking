@@ -27,7 +27,7 @@
 
 
 #define SPAWN_CUBE_LENGTH         50.0
-const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,0.0,1);
+const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,100.0,1);
 const glm::vec4 zero_vec = glm::vec4(0.0,0.0,0.0,0.0);
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
 const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,10.0,0,0); //initial speed parallel with y-axis
