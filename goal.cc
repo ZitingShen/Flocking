@@ -27,6 +27,14 @@ void update_goal_pos(GOAL* a_goal){
 }
 
 void draw_a_goal(GOAL* a_goal){
-
-
+  glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glVertexPointer(3, GL_FLOAT, 0, CUBE_VERTICES);
+  glColorPointer(3, GL_FLOAT, 0, CUBE_COLORS);
+  glPushMatrix();
+  glTranslatef(a_goal->pos.x, a_goal->pos.y, a_goal->pos.z);
+  glDrawElements(GL_QUADS, 24, GL_UNSIGNED_BYTE, CUBE_INDICES);
+  glPopMatrix();
+  glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_VERTEX_ARRAY);
 }
