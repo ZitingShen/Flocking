@@ -16,6 +16,7 @@
 #include "list.h"
 #include "view.h"
 #include "boid.h"
+#include "flocking.h"
 
 void init();
 void draw_cube();

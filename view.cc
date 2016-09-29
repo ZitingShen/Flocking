@@ -16,9 +16,6 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     gluPerspective(45, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //gluLookAt(0, 0.01, TOWER_HEIGHT, midpoint.x, midpoint.y, midpoint.z, 
-    //          0, 0, 1);
-    //std::cout << midpoint.x << " " << midpoint.y << " " << midpoint.z << std::endl;
     gluLookAt(0, 0.01, TOWER_HEIGHT, 0, 0, 0, 0, 0, 1);
     break;
 
@@ -29,7 +26,6 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    std::cout << flock_direction.w << std::endl;
     camera_pos = center
                  - flock_direction*(distance + 5*max_distance)*((float)0.5)
                  + glm::vec4(0, 0, 1, 0)*(distance + max_distance);
@@ -80,7 +76,6 @@ void draw_background(GLfloat squares_pos[][2]) {
     }
     glPushMatrix();
     glTranslatef(squares_pos[i][0], squares_pos[i][1], -10);
-    //std::cout << squares_pos[i][0] << " " << squares_pos[i][1] << std::endl;
     glPointSize(5);
     glDrawArrays(GL_QUADS, 0, 4);
     glPopMatrix();

@@ -1,7 +1,7 @@
 #include "flocking.h"
 
 List* A_FLOCK = NULL;
-GOAL A_GOAL;
+GOAL* A_GOAL;
 int IS_PAUSED = GLFW_FALSE;
 int PAUSE_TIME = 0;
 viewMode VIEW_MODE = DEFAULT;
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
-  glShadeModel(GL_FLAT);
+  glShadeModel(GL_SMOOTH);
 
   while(!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -41,14 +41,15 @@ int main(int argc, char** argv) {
 
     if(!IS_PAUSED || PAUSE_TIME > 0) {
       glfwGetWindowSize(window, &WIDTH, &HEIGHT);
-      change_view(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, &A_GOAL);
+      change_view(VIEW_MODE, WIDTH, HEIGHT, A_FLOCK, A_GOAL);
+      update_goal_velocity(A_GOAL);
+      update_goal_pos(A_GOAL);
       update_velocity(A_FLOCK);
       update_pos(A_FLOCK);
-      //moveGoal(goal);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
         draw_background(SQUARES_POS);
         draw_a_flock(A_FLOCK);
-        //draw_cube();
+        draw_a_goal(A_GOAL);
       }
       glfwSwapBuffers(window);
       if (IS_PAUSED && PAUSE_TIME > 0) {
@@ -67,7 +68,7 @@ void init() {
   glColor3f(0.0, 0.0, 0.0);
   // initialise a flock of boid
   A_FLOCK = list_new();
-  A_GOAL.pos = glm::vec4(0, 0, 0, 1);
+  A_GOAL = new_goal();
   srand(time(NULL));
   init_a_flock(A_FLOCK);
   init_background(SQUARES_POS);
@@ -78,7 +79,7 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 }
 
 void reshape(GLFWwindow* window, int w, int h) {
-  change_view(VIEW_MODE, w, h, A_FLOCK, &A_GOAL);
+  change_view(VIEW_MODE, w, h, A_FLOCK, A_GOAL);
 }
 
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
