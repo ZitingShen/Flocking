@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
       update_goal_velocity(A_GOAL);
       update_goal_pos(A_GOAL);
       update_velocity(A_FLOCK);
+      update_wing_rotation(A_FLOCK);
       apply_goal_attraction(A_FLOCK, A_GOAL);
       update_pos(A_FLOCK);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){

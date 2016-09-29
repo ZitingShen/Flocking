@@ -32,6 +32,9 @@
 #define DETERRENCE_WEIGHT         ((float) 1.0) // this should be the most significant weight
 #define AVOIDANCE_WEIGHT          ((float) 0.8) // this should be significant as well
 
+#define MAX_WING_ROTATION         90
+#define WING_ROTATION_PER_FRAME   0.1
+
 #define RANDOMISE_V_FACTOR        45
 #define SPAWN_CUBE_LENGTH         50.0
 const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,999.0,1);
@@ -46,23 +49,27 @@ const GLfloat A_BOID[][3] =
             {{0, 0, 0}, // position of the centroid
             {0, BOID_SIZE*2, 0}, // position of the head
             {-BOID_SIZE, -BOID_SIZE, 0}, // position of the left vertex
-            {BOID_SIZE, -BOID_SIZE, 0}}; // position of the right vertex;
+            {BOID_SIZE, -BOID_SIZE, 0}}; // position of the right vertex
+
+const GLfloat A_BOID_COLORS[][3] = {
+    {0.0, 0.0, 0.0}, 
+    {BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]},
+    {0.0, 0.0, 0.0}, 
+    {0.0, 0.0, 0.0}};
 
 const glm::vec3 centroid_init = glm::vec3(0,0,0);
 const glm::vec3 head_init = glm::vec3(0,BOID_SIZE*2,0);
 const glm::vec3 left_init = glm::vec3(-BOID_SIZE,-BOID_SIZE,0);
 const glm::vec3 right_init = glm::vec3(BOID_SIZE,-BOID_SIZE,0);
 
-
-const GLubyte A_BOID_VERTICES[6] = {0, 1, 2,
-                                    0, 3, 1}; //drawing two triangles;
-
+const GLubyte A_BOID_LEFT[3] = {0, 1, 2};
+const GLubyte A_BOID_RIGHT[3] = {0, 3, 1}; //drawing two triangles;
 
 typedef struct _boid{
-  //glm::mat4 left_rotation;       // TODO: for flapping extra credit       
-  //glm::mat4 right_rotation;
+  GLfloat wing_rotation;          // for flapping extra credit
+  int wing_rotation_direction;     
   glm::vec4 pos;
-  glm::vec4 velocity;              // also determines PA direction; and the degrees of rotation
+  glm::vec4 velocity;             // also determines PA direction; and the degrees of rotation
   float partner_radius;           // the radius within which it looks for partners
 } BOID;
 
@@ -83,7 +90,7 @@ BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos);
 bool is_partner(BOID* source, BOID* target);
 void update_velocity(List* a_flock);
 void update_pos(List* a_flock);
-
+void update_wing_rotation(List* a_flock);
 
 glm::vec4 get_current_pos(BOID* a_boid);
 glm::vec4 flock_centroid(List* a_flock);

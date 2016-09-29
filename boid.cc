@@ -1,10 +1,15 @@
 #include "boid.h"
+#include <iostream>
 
-BOID* new_boid(glm::vec4 velocity, float radius){
+BOID* new_boid(){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
   a_boid->pos = SPAWN_POSITION;
-  a_boid->velocity = velocity;
-  a_boid->partner_radius = radius;
+  a_boid->velocity = SPAWN_VELOCITY;
+  a_boid->partner_radius = PARTNER_RADIUS;
+  a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION) 
+                          - MAX_WING_ROTATION;
+  //std::cout << a_boid->wing_rotation << std::endl;
+  a_boid->wing_rotation_direction = 1;
   return a_boid;
 }
 
@@ -13,6 +18,9 @@ BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos){
   a_boid->pos = pos;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
+  a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION) 
+                          - MAX_WING_ROTATION;
+  a_boid->wing_rotation_direction = 1;
   return a_boid;
 }
 
@@ -70,6 +78,21 @@ void update_pos(List* a_flock){
   while (current != NULL){
     a_boid = (BOID*)(current->data);
     a_boid->pos += a_boid->velocity;
+    current = current->next;
+  }
+}
+
+void update_wing_rotation(List* a_flock){
+  if (a_flock == NULL || a_flock->length == 0) return;
+  BOID* a_boid;
+  NODE* current = a_flock->head;
+  while (current != NULL){
+    a_boid = (BOID*)(current->data);
+    if (a_boid->wing_rotation > MAX_WING_ROTATION || 
+        a_boid->wing_rotation < -MAX_WING_ROTATION)
+      a_boid->wing_rotation_direction *= -1;
+    a_boid->wing_rotation += a_boid->wing_rotation_direction*
+                             WING_ROTATION_PER_FRAME;
     current = current->next;
   }
 }
@@ -159,10 +182,7 @@ void init_a_flock(List* a_flock){
   int half_cube_length = default_cube_length/2;
 
   for (int i = 0; i < DEFAULT_FLOCK_SIZE; i++){
-    BOID* a_boid= (BOID*)malloc(sizeof(BOID));
-    a_boid->pos = SPAWN_POSITION;
-    a_boid->velocity = SPAWN_VELOCITY;
-    a_boid->partner_radius = PARTNER_RADIUS;
+    BOID* a_boid= new_boid();
     a_boid->pos.x += (rand() % default_cube_length) - half_cube_length;
     a_boid->pos.y += (rand() % default_cube_length) - half_cube_length;
     a_boid->pos.z += (rand() % default_cube_length) - half_cube_length;
@@ -172,13 +192,14 @@ void init_a_flock(List* a_flock){
 
 void draw_a_flock(List* a_flock){
   if (a_flock == NULL) return;
-  NODE* current = a_flock->head;
+  NODE* current = NULL;
   BOID* some_boid = NULL;
 
-  glColor3f(BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]);
   glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_BOID);
-
+  glColorPointer(3, GL_FLOAT, 0, A_BOID_COLORS);
+  /*
   for (int i = 0; i < a_flock->length; i++){
     some_boid = (BOID*)(current->data);
     glm::vec3 velocity3(some_boid->velocity);
@@ -193,6 +214,46 @@ void draw_a_flock(List* a_flock){
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
     glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_BOID_VERTICES);
+    glPopMatrix();
+    current = current->next;
+  }*/
+
+  current = a_flock->head;
+  for (int i = 0; i < a_flock->length; i++){
+    some_boid = (BOID*)(current->data);
+    glm::vec3 velocity3(some_boid->velocity);
+    velocity3 = glm::normalize(velocity3);
+    glm::vec3 initial3(SPAWN_VELOCITY);
+    initial3 = glm::normalize(initial3);
+    glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
+    float angle = glm::orientedAngle(initial3, velocity3, 
+                                     rotate_normal)*180/PI;
+
+    glPushMatrix();
+    glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
+    glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
+    glRotatef(-some_boid->wing_rotation, 0, 1, 0);
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
+    glPopMatrix();
+    current = current->next;
+  }
+
+  current = a_flock->head;
+  for (int i = 0; i < a_flock->length; i++){
+    some_boid = (BOID*)(current->data);
+    glm::vec3 velocity3(some_boid->velocity);
+    velocity3 = glm::normalize(velocity3);
+    glm::vec3 initial3(SPAWN_VELOCITY);
+    initial3 = glm::normalize(initial3);
+    glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
+    float angle = glm::orientedAngle(initial3, velocity3, 
+                                     rotate_normal)*180/PI;
+
+    glPushMatrix();
+    glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
+    glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
+    glRotatef(some_boid->wing_rotation, 0, 1, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_BOID_RIGHT);
     glPopMatrix();
     current = current->next;
   }
