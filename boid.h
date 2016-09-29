@@ -23,23 +23,23 @@
 #define PI                        3.141592
 
 #define PARTNER_RADIUS            20
-#define DEFAULT_FLOCK_SIZE        20
+#define DEFAULT_FLOCK_SIZE        5
 
-#define SEPARATION_WEIGHT         ((float) 0.008)
-#define ALIGNMENT_WEIGHT          ((float) 0.002)
-#define COHESION_WEIGHT           ((float) 0.006)
-#define ATTRACTION_WEIGHT         ((float) 0.003)
+#define SEPARATION_WEIGHT         ((float) 0.01)
+#define ALIGNMENT_WEIGHT          ((float) 0.0004)
+#define COHESION_WEIGHT           ((float) 0.0004)
+#define ATTRACTION_WEIGHT         ((float) 0.0003)
 #define DETERRENCE_WEIGHT         ((float) 1.0) // this should be the most significant weight
 #define AVOIDANCE_WEIGHT          ((float) 0.8) // this should be significant as well
 
 #define RANDOMISE_V_FACTOR        45
 #define SPAWN_CUBE_LENGTH         50.0
 const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,100.0,1);
-const glm::vec4 zero_vec = glm::vec4(0.0,0.0,0.0,0.0);
+const glm::vec4 ZERO_VEC = glm::vec4(0.0,0.0,0.0,0.0);
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
-const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,10.0,0,0); //initial speed parallel with y-axis
+const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.1,0,0); //initial speed parallel with y-axis
 
-#define BOID_SIZE                 5
+#define BOID_SIZE                 20
 const GLfloat A_BOID[][3] =
             {{0, 0, 0}, // position of the centroid
             {0, BOID_SIZE*2, 0}, // position of the head
