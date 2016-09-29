@@ -12,14 +12,30 @@ GOAL* new_goal(){
 }
 
 void update_goal_velocity(GOAL* a_goal){
-  if (a_goal->MOVE_ALONG_X_POSITIVE)
+  if (a_goal->MOVE_ALONG_X_POSITIVE){
+    if (a_goal->velocity[0] < 0){
+      a_goal->velocity[0] = -a_goal->velocity[0];
+    }
     a_goal->velocity[0] += (float)DEFAULT_ACCELERATION;
-  if (a_goal->MOVE_ALONG_X_NEGATIVE)
+  }
+  if (a_goal->MOVE_ALONG_X_NEGATIVE){
+    if (a_goal->velocity[0] > 0){
+      a_goal->velocity[0] = -a_goal->velocity[0];
+    }
     a_goal->velocity[0] -= (float)DEFAULT_ACCELERATION;
-  if (a_goal->MOVE_ALONG_Y_POSITIVE)
+  }
+  if (a_goal->MOVE_ALONG_Y_POSITIVE){
+    if (a_goal->velocity[1] < 0){
+      a_goal->velocity[1] = -a_goal->velocity[1];
+    }
     a_goal->velocity[1] += (float)DEFAULT_ACCELERATION;
-  if (a_goal->MOVE_ALONG_Y_NEGATIVE)
+  }
+  if (a_goal->MOVE_ALONG_Y_NEGATIVE){
+    if (a_goal->velocity[1] > 0){
+      a_goal->velocity[1] = -a_goal->velocity[1];
+    }
     a_goal->velocity[1] -= (float)DEFAULT_ACCELERATION;
+  }
 }
 
 void update_goal_pos(GOAL* a_goal){
