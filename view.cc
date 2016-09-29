@@ -16,7 +16,8 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     gluPerspective(45, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0.01, TOWER_HEIGHT, 0, 0, 0, 0, 0, 1);
+    gluLookAt(0, 0.01, TOWER_HEIGHT, midpoint.x, midpoint.y, 
+      midpoint.z, 0, 0, 1);
     break;
 
     case TRAILING:

@@ -1,11 +1,11 @@
 #include "boid.h"
 #include <iostream>
-
+/*
 GLfloat A_BOID[][3] = {{0,0,0},
                        {0,0,0},
                        {0,0,0},
                        {0,0,0}};
-
+*/
 BOID* new_boid(glm::vec4 velocity, float radius){
   BOID* a_boid = new BOID;
   a_boid->pos = SPAWN_POSITION;
@@ -180,25 +180,21 @@ void draw_a_flock(List* a_flock){
 
   glColor3f(0.0, 0.0, 0.0);
   glEnableClientState(GL_VERTEX_ARRAY);
-  //glVertexPointer(3, GL_FLOAT, 0, A_BOID);
+  glVertexPointer(3, GL_FLOAT, 0, A_BOID);
 
   for (int i = 0; i < a_flock->length; i++){
     some_boid = (BOID*)(current->data);
-    update_rotation(some_boid);
-    glVertexPointer(3, GL_FLOAT, 0, A_BOID);
-    //glm::vec4 rotate_normal = glm::normalize(some_boid->velocity);
-    //GLfloat rotate_matrix[16] = {1, 0, 0, rotate_normal.x,
-    //                             0, 1, 0, rotate_normal.y,
-    //                             0, 0, 1, rotate_normal.z,
-    //                             0, 0, 0, 1};
-    //if (i == 0) {
-    //  std::cout << some_boid->pos.x << " " << some_boid->pos.y << " " << some_boid->pos.z << std::endl;
-    //  glm::vec4 midpoint = mid_point(A_FLOCK, &A_GOAL);
-    //  std::cout << midpoint.x << " " << midpoint.y << " " << midpoint.z << std::endl;
-    //}
+    //update_rotation(some_boid);
+    //glVertexPointer(3, GL_FLOAT, 0, A_BOID);
+    glm::vec3 velocity3(some_boid->velocity);
+    glm::vec3 initial3(SPAWN_VELOCITY);
+    glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
+    float angle = glm::orientedAngle(initial3, velocity3, 
+                                      rotate_normal);
+
     glPushMatrix();
-    //glMultMatrixf(rotate_matrix);
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
+    glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_BOID_VERTICES);
     glPopMatrix();
     current = current->next;
@@ -230,7 +226,7 @@ glm::vec4 randomise_velocity(glm::vec4 raw_v){
 
   return new_velocity;
 }
-
+/*
 void update_rotation(BOID* a_boid){
   glm::vec3 new_head = glm::vec3(a_boid->velocity[0],a_boid->velocity[1],a_boid->velocity[2]);
   glm::vec3 x_axis_ref = glm::vec3(1,0,0);
@@ -262,4 +258,4 @@ void update_rotation(BOID* a_boid){
   A_BOID[3][1] = new_right[1];
   A_BOID[3][2] = new_right[2];
 }
-
+*/
