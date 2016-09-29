@@ -11,7 +11,7 @@
 #include <GL/glu.h>
 #endif
 
-#define DEFAULT_ACCELERATION 0.01
+#define DEFAULT_ACCELERATION 0.001
 #define TRUE  1
 #define FALSE 0
 
