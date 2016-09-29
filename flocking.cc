@@ -132,6 +132,14 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
       A_GOAL->MOVE_ALONG_Y_NEGATIVE = true;
       break;
 
+      case GLFW_KEY_RIGHT:
+      A_GOAL->ACCELERATE = true;
+      break;
+
+      case GLFW_KEY_LEFT:
+      A_GOAL->DECELERATE = true;
+      break;
+
       case GLFW_KEY_Q:
       case GLFW_KEY_ESCAPE:
       glfwSetWindowShouldClose(w, GLFW_TRUE);
@@ -155,6 +163,15 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
 
       case GLFW_KEY_S: // decrease y velocity
       A_GOAL->MOVE_ALONG_Y_NEGATIVE = false;
+      
+      case GLFW_KEY_RIGHT:
+      A_GOAL->ACCELERATE = false;
+      break;
+
+      case GLFW_KEY_LEFT:
+      A_GOAL->DECELERATE = false;
+      break;
+
       default:
       break;
     }

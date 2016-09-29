@@ -11,17 +11,20 @@
 #include <glm/glm.hpp>
 #include "boid.h"
 
-#define TOWER_HEIGHT              800
+#define TOWER_HEIGHT              1800
 #define CAMERA_NEAR               0.1
 #define CAMERA_FAR                (TOWER_HEIGHT*200)
 
-#define BG_SQUARE_SIDE            200.0
-#define BG_SQUARE_NUM             49   // must be an odd number
+#define BG_SQUARE_SIDE            2000.0
+#define BG_SQUARE_NUM             97   // must be an odd number
 const GLfloat A_SQUARE[][3]= 
             {{0, 0, 0},
             {BG_SQUARE_SIDE, 0, 0},
             {BG_SQUARE_SIDE, BG_SQUARE_SIDE, 0},
             {0, BG_SQUARE_SIDE, 0}};
+
+const float CHESS_BOARD_COLOUR_X[3] = {0.449,0.451,0.494};  //grey
+const float CHESS_BOARD_COLOUR_Y[3] = {0.0, 0.0, 0.0};	   //black
 
 typedef enum viewMode {DEFAULT, TRAILING, SIDE} viewMode;
 

@@ -175,7 +175,7 @@ void draw_a_flock(List* a_flock){
   NODE* current = a_flock->head;
   BOID* some_boid = NULL;
 
-  glColor3f(0.6, 0.4, 0.0);
+  glColor3f(BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]);
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_BOID);
 
@@ -211,7 +211,7 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
 
 glm::vec4 randomise_velocity(glm::vec4 raw_v){
   glm::vec4 new_velocity;
-
+  
   new_velocity = glm::rotateX(raw_v,
                        (float)(rand()%(2*RANDOMISE_V_FACTOR)-RANDOMISE_V_FACTOR));
 
@@ -220,6 +220,5 @@ glm::vec4 randomise_velocity(glm::vec4 raw_v){
 
   new_velocity = glm::rotateZ(raw_v,
                        (float)(rand()%(2*RANDOMISE_V_FACTOR)-RANDOMISE_V_FACTOR));
-
   return new_velocity;
 }

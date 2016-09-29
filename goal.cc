@@ -8,33 +8,49 @@ GOAL* new_goal(){
   a_goal->MOVE_ALONG_X_POSITIVE = false;
   a_goal->MOVE_ALONG_Y_NEGATIVE = false;
   a_goal->MOVE_ALONG_Y_POSITIVE = false;
+  a_goal->ACCELERATE = false;
+  a_goal->DECELERATE = false;
   return a_goal;
 }
 
 void update_goal_velocity(GOAL* a_goal){
+  //float temp_z;
   if (a_goal->MOVE_ALONG_X_POSITIVE){
     if (a_goal->velocity[0] < 0){
       a_goal->velocity[0] = -a_goal->velocity[0];
     }
-    a_goal->velocity[0] += (float)DEFAULT_ACCELERATION;
+    a_goal->velocity[0] += DEFAULT_ACCELERATION_MARGIN;
   }
+
   if (a_goal->MOVE_ALONG_X_NEGATIVE){
     if (a_goal->velocity[0] > 0){
       a_goal->velocity[0] = -a_goal->velocity[0];
     }
-    a_goal->velocity[0] -= (float)DEFAULT_ACCELERATION;
+    a_goal->velocity[0] -= DEFAULT_ACCELERATION_MARGIN;
   }
+
   if (a_goal->MOVE_ALONG_Y_POSITIVE){
     if (a_goal->velocity[1] < 0){
       a_goal->velocity[1] = -a_goal->velocity[1];
     }
-    a_goal->velocity[1] += (float)DEFAULT_ACCELERATION;
+    a_goal->velocity[1] += DEFAULT_ACCELERATION_MARGIN;
   }
+
   if (a_goal->MOVE_ALONG_Y_NEGATIVE){
     if (a_goal->velocity[1] > 0){
       a_goal->velocity[1] = -a_goal->velocity[1];
     }
-    a_goal->velocity[1] -= (float)DEFAULT_ACCELERATION;
+    a_goal->velocity[1] -= DEFAULT_ACCELERATION_MARGIN;
+  }
+
+  if (a_goal->ACCELERATE){
+    a_goal->velocity = float(1 + DEFAULT_ACCELERATION_FACTOR) * a_goal->velocity;
+    a_goal->velocity[2] = 0.01; // do not accerlate on Z
+  }
+
+  if (a_goal->DECELERATE){
+    a_goal->velocity = float(1 - DEFAULT_ACCELERATION_FACTOR) * a_goal->velocity;
+    a_goal->velocity[2] = 0.01; // do not accerlate on Z
   }
 }
 

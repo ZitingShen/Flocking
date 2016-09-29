@@ -11,18 +11,19 @@
 #include <GL/glu.h>
 #endif
 
-#define DEFAULT_ACCELERATION 0.001
+#define DEFAULT_ACCELERATION_FACTOR    0.01
+#define DEFAULT_ACCELERATION_MARGIN   0.05
 #define TRUE  1
 #define FALSE 0
 
-const glm::vec4 DEFAULT_GOAL_SPAWN_VELOCITY = glm::vec4(0,0,0.01,0); // initiated with a positive speed on Z-axis
-const glm::vec4 DEFAULT_GOAL_SPAWN_POSITION = glm::vec4(0,0,100,1);
+const glm::vec4 DEFAULT_GOAL_SPAWN_VELOCITY = glm::vec4(1,1,0.01,0); // initiated with a positive speed on Z-axis
+const glm::vec4 DEFAULT_GOAL_SPAWN_POSITION = glm::vec4(1500,1500,1000,1);
 
 const GLfloat CUBE_VERTICES[][3] = {
-                           {-1.0, -1.0, 1.0},  {-1.0, 1.0, 1.0}, 
-                           {1.0, 1.0, 1.0},    {1.0, -1.0, 1.0}, 
-                           {-1.0, -1.0, -1.0}, {-1.0, 1.0, -1.0}, 
-                           {1.0, 1.0, -1.0},   {1.0, -1.0, -1.0}};
+                           {-100.0, -10.0, 100.0},  {-100.0, 100.0, 100.0}, 
+                           {100.0, 10.00, 100.0},    {100.0, -100.0, 100.0}, 
+                           {-100.0, -100.0, -100.0}, {-100.0, 100.0, -100.0}, 
+                           {100.0, 100.0, -100.0},   {100.0, -100.0, -100.0}};
 const GLfloat CUBE_COLORS[][3] = {{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, 
                                   {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}, 
                                   {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, 
@@ -41,6 +42,8 @@ typedef struct _goal{
   bool MOVE_ALONG_X_NEGATIVE;
   bool MOVE_ALONG_Y_POSITIVE;
   bool MOVE_ALONG_Y_NEGATIVE;
+  bool ACCELERATE;
+  bool DECELERATE;
 } GOAL;
 
 

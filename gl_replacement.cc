@@ -10,14 +10,14 @@ void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
 
   glm::vec3 up_normal = glm::cross(side_normal, forward_normal);
 
-  GLfloat trans_matrix[16] = //putting in column-major way
+  GLfloat trans_matrix[16] = //putting in column-major order
              {side_normal[0], up_normal[0], -forward_normal[0], 0,
               side_normal[1], up_normal[1], -forward_normal[1], 0,
               side_normal[2], up_normal[2], -forward_normal[2], 0,
               0,0,0,1};
 
   glMultMatrixf(trans_matrix);
-  glTranslatef(-eye[0], -eye[1], -eye[2]);
+  glTranslatef(-eye[0], -eye[1], -eye[2]); //move to eye
 }
 
 void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
@@ -26,7 +26,7 @@ void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
   GLfloat x_max = y_max * aspect;
   GLfloat x_min = -x_max;
 
-  GLfloat trans_matrix[16] =
+  GLfloat trans_matrix[16] = //putting in column-major order
        {2*zNear*aspect/(x_max-x_min), 0, 0, 0,
         0, 2*zNear/(y_max-y_min), 0, 0,
         0, 0, -(zFar+zNear)/(zFar-zNear), -1,

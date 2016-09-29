@@ -109,9 +109,9 @@ void draw_background(GLfloat squares_pos[][2]) {
   glVertexPointer(3, GL_FLOAT, 0, A_SQUARE);
   for (int i = 0; i < BG_SQUARE_NUM*BG_SQUARE_NUM; i++) {
     if(i % 2 == 0) {
-      glColor3f(1.0, 0.6, 0.6);
+      glColor3f(CHESS_BOARD_COLOUR_X[0], CHESS_BOARD_COLOUR_X[1], CHESS_BOARD_COLOUR_X[2]);
     } else {
-      glColor3f(0.6, 0.6, 1.0);
+      glColor3f(CHESS_BOARD_COLOUR_Y[0], CHESS_BOARD_COLOUR_Y[1], CHESS_BOARD_COLOUR_Y[2]);
     }
     glPushMatrix();
     glTranslatef(squares_pos[i][0], squares_pos[i][1], -10);
