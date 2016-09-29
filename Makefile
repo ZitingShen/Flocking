@@ -8,7 +8,7 @@ CFLAGS=-g -Wall -I/usr/local/Cellar/glfw3/3.2.1/include
 
 TARGET = flocking
 SRC = $(TARGET).cc
-LIB = list.o boid.o view.o goal.o
+LIB = list.o boid.o view.o goal.o gl_replacement.o
 all: flock
 
 flock: $(SRC) $(LIB)
@@ -25,6 +25,9 @@ view.o: view.cc view.h
 
 goal.o: goal.cc goal.h
 	$(CC) $(CFLAGS) -c goal.cc
+
+gl_replacement.o: gl_replacement.cc gl_replacement.h
+	$(CC) $(CFLAGS) -c gl_replacement.cc
 
 clean:
 	rm $(TARGET) $(LIB)

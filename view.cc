@@ -45,7 +45,7 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
     glLoadIdentity();
 
     camera_pos = center
-                 - flock_direction*(distance + 5*max_distance)*((float)0.5)
+                 - flock_direction*(distance + 5*max_distance)
                  + glm::vec4(0, 0, 1, 0)*(distance + max_distance);
     //gluLookAt(camera_pos.x, camera_pos.y, camera_pos.z, midpoint.x, midpoint.y, 
     //          midpoint.z, 0, 0, 1);

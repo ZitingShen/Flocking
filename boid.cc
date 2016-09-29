@@ -1,7 +1,7 @@
 #include "boid.h"
 
 BOID* new_boid(glm::vec4 velocity, float radius){
-  BOID* a_boid = new BOID;
+  BOID* a_boid = (BOID*)malloc(sizeof(BOID));
   a_boid->pos = SPAWN_POSITION;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
@@ -9,7 +9,7 @@ BOID* new_boid(glm::vec4 velocity, float radius){
 }
 
 BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos){
-  BOID* a_boid = new BOID;
+  BOID* a_boid = (BOID*)malloc(sizeof(BOID));
   a_boid->pos = pos;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
@@ -22,7 +22,7 @@ bool is_partner(BOID* source, BOID* target){
 }
 
 void update_velocity(List* a_flock){
-  if (a_flock == NULL || a_flock->length == 0) return;
+  if (a_flock == NULL || a_flock->length < 2) return;
   NODE* current_boid = a_flock->head;
   NODE* potential_partner;
   glm::vec4 s_modifier, a_modifier, c_modifier;
@@ -32,9 +32,9 @@ void update_velocity(List* a_flock){
   BOID* target = NULL;
   while (current_boid != NULL){
     num_of_partners = 0; //reset for the next boid
-    s_modifier = zero_vec;
-    a_modifier = zero_vec;
-    c_modifier = zero_vec;
+    s_modifier = ZERO_VEC;
+    a_modifier = ZERO_VEC;
+    c_modifier = ZERO_VEC;
     potential_partner = a_flock->head;
     num_of_partners = 0;
     while (potential_partner != NULL){
@@ -69,7 +69,7 @@ void update_pos(List* a_flock){
   NODE* current = a_flock->head;
   while (current != NULL){
     a_boid = (BOID*)(current->data);
-    a_boid->pos += a_boid->velocity*((float)0.01);
+    a_boid->pos += a_boid->velocity;
     current = current->next;
   }
 }
@@ -80,9 +80,9 @@ glm::vec4 get_current_pos(BOID* a_boid){
 
 glm::vec4 flock_centroid(List* a_flock){
   if (a_flock == NULL || a_flock->length == 0) 
-    return glm::vec4(0, 0, 0, 1);
+    return EMPTY_POS;
   NODE* current = a_flock->head;
-  glm::vec4 centroid = glm::vec4(0, 0, 0, 1);
+  glm::vec4 centroid = EMPTY_POS;
   while (current != NULL){
      centroid += get_current_pos((BOID*)(current->data));
      current = current->next;
@@ -91,22 +91,26 @@ glm::vec4 flock_centroid(List* a_flock){
 }
 
 glm::vec4 mid_point(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL || a_flock->length == 0) return zero_vec;
+  if (a_flock == NULL || a_flock->length == 0) 
+    return ZERO_VEC;
   return (flock_centroid(a_flock)+(a_goal->pos))*(0.5f);
 }
 
 glm::vec4 get_u(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL || a_flock->length == 0) return zero_vec;
+  if (a_flock == NULL || a_flock->length == 0) 
+    return ZERO_VEC;
   return (a_goal->pos - flock_centroid(a_flock));
 }
 
 float get_d(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL || a_flock->length == 0) return 0;
+  if (a_flock == NULL || a_flock->length == 0) 
+    return 0;
   return glm::distance(flock_centroid(a_flock), a_goal->pos);
 }
 
 float flock_radius(List* a_flock){
-  if (a_flock == NULL || a_flock->length == 0) return 0;
+  if (a_flock == NULL || a_flock->length == 0) 
+    return 0;
   float max_r = 0;
   float dis   = 0;
   NODE* current = a_flock->head;
@@ -155,7 +159,7 @@ void init_a_flock(List* a_flock){
   int half_cube_length = default_cube_length/2;
 
   for (int i = 0; i < DEFAULT_FLOCK_SIZE; i++){
-    BOID* a_boid= new BOID;
+    BOID* a_boid= (BOID*)malloc(sizeof(BOID));
     a_boid->pos = SPAWN_POSITION;
     a_boid->velocity = SPAWN_VELOCITY;
     a_boid->partner_radius = PARTNER_RADIUS;
@@ -171,7 +175,7 @@ void draw_a_flock(List* a_flock){
   NODE* current = a_flock->head;
   BOID* some_boid = NULL;
 
-  glColor3f(0.0, 0.0, 0.0);
+  glColor3f(0.6, 0.4, 0.0);
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_BOID);
 
@@ -197,7 +201,7 @@ void draw_a_flock(List* a_flock){
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal){
   NODE* current=a_flock->head;
-  glm::vec4 v_modifier = zero_vec;
+  glm::vec4 v_modifier = ZERO_VEC;
   while (current!=NULL){
     v_modifier = ATTRACTION_WEIGHT*(a_goal->pos - get_current_pos((BOID*)(current->data)));
     ((BOID*)(current->data))->velocity += v_modifier;
