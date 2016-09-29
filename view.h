@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 #include "boid.h"
 
-#define TOWER_HEIGHT              1800
+#define TOWER_HEIGHT              2500
 #define CAMERA_NEAR               0.1
 #define CAMERA_FAR                (TOWER_HEIGHT*200)
 

@@ -33,7 +33,6 @@ int main(int argc, char** argv) {
   init();
 
   glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
   glShadeModel(GL_SMOOTH);
 
   while(!glfwWindowShouldClose(window)) {

@@ -199,24 +199,6 @@ void draw_a_flock(List* a_flock){
   glEnableClientState(GL_COLOR_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_BOID);
   glColorPointer(3, GL_FLOAT, 0, A_BOID_COLORS);
-  /*
-  for (int i = 0; i < a_flock->length; i++){
-    some_boid = (BOID*)(current->data);
-    glm::vec3 velocity3(some_boid->velocity);
-    velocity3 = glm::normalize(velocity3);
-    glm::vec3 initial3(SPAWN_VELOCITY);
-    initial3 = glm::normalize(initial3);
-    glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
-    float angle = glm::orientedAngle(initial3, velocity3, 
-                                     rotate_normal)*180/PI;
-
-    glPushMatrix();
-    glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
-    glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_BOID_VERTICES);
-    glPopMatrix();
-    current = current->next;
-  }*/
 
   current = a_flock->head;
   for (int i = 0; i < a_flock->length; i++){
@@ -232,12 +214,18 @@ void draw_a_flock(List* a_flock){
     glPushMatrix();
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
     glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
+    glPushMatrix();
     glRotatef(-some_boid->wing_rotation, 0, 1, 0);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
+    glPopMatrix();
+    glRotatef(some_boid->wing_rotation, 0, 1, 0);
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);
     glPopMatrix();
     current = current->next;
   }
 
+  glDisableClientState(GL_COLOR_ARRAY);
+  glColor3f(BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]);
   current = a_flock->head;
   for (int i = 0; i < a_flock->length; i++){
     some_boid = (BOID*)(current->data);
@@ -252,8 +240,12 @@ void draw_a_flock(List* a_flock){
     glPushMatrix();
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
     glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
+    glPushMatrix();
+    glRotatef(-some_boid->wing_rotation, 0, 1, 0);
+    glDrawElements(GL_LINE_LOOP, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
+    glPopMatrix();
     glRotatef(some_boid->wing_rotation, 0, 1, 0);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, A_BOID_RIGHT);
+    glDrawElements(GL_LINE_LOOP, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);
     glPopMatrix();
     current = current->next;
   }
