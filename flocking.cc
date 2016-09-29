@@ -45,6 +45,7 @@ int main(int argc, char** argv) {
       update_goal_velocity(A_GOAL);
       update_goal_pos(A_GOAL);
       update_velocity(A_FLOCK);
+      apply_goal_attraction(A_FLOCK, A_GOAL);
       update_pos(A_FLOCK);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
         draw_background(SQUARES_POS);
@@ -116,21 +117,19 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
       break;
 
       case GLFW_KEY_A: // decrease x velocity
+      A_GOAL->MOVE_ALONG_X_NEGATIVE = true;
       break;
 
       case GLFW_KEY_D: // increase x velocity
+      A_GOAL->MOVE_ALONG_X_POSITIVE = true;
       break;
 
       case GLFW_KEY_W: // increase y velocity
+      A_GOAL->MOVE_ALONG_Y_POSITIVE = true;
       break;
 
       case GLFW_KEY_S: // decrease y velocity
-      break;
-
-      case GLFW_KEY_Z: // increase z velocity
-      break;
-
-      case GLFW_KEY_X: // decrease z velocity
+      A_GOAL->MOVE_ALONG_Y_NEGATIVE = true;
       break;
 
       case GLFW_KEY_Q:
@@ -142,6 +141,20 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
     }
   } else if (action == GLFW_RELEASE) {
     switch(key) {
+      case GLFW_KEY_A: // decrease x velocity
+      A_GOAL->MOVE_ALONG_X_NEGATIVE = false;
+      break;
+
+      case GLFW_KEY_D: // increase x velocity
+      A_GOAL->MOVE_ALONG_X_POSITIVE = false;
+      break;
+
+      case GLFW_KEY_W: // increase y velocity
+      A_GOAL->MOVE_ALONG_Y_POSITIVE = false;
+      break;
+
+      case GLFW_KEY_S: // decrease y velocity
+      A_GOAL->MOVE_ALONG_Y_NEGATIVE = false;
       default:
       break;
     }

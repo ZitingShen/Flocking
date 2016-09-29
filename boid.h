@@ -26,7 +26,7 @@
 #define SEPARATION_WEIGHT         ((float) 0.008)
 #define ALIGNMENT_WEIGHT          ((float) 0.002)
 #define COHESION_WEIGHT           ((float) 0.006)
-#define ATTRACTION_WEIGHT         ((float) 0.1)
+#define ATTRACTION_WEIGHT         ((float) 0.003)
 #define DETERRENCE_WEIGHT         ((float) 1.0) // this should be the most significant weight
 #define AVOIDANCE_WEIGHT          ((float) 0.8) // this should be significant as well
 
@@ -95,7 +95,7 @@ void remove_a_boid(List* a_flock);
 
 void init_a_flock(List* a_flock);
 
-void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w);
+void apply_goal_attraction(List* a_flock, GOAL* a_goal);
 void draw_a_flock(List* a_flock);
 
 glm::vec4 randomise_velocity(glm::vec4 raw_v);
