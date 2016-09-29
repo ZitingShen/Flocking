@@ -206,11 +206,11 @@ void draw_a_flock(List* a_flock){
   glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w){
+void apply_goal_attraction(List* a_flock, GOAL* a_goal){
   NODE* current=a_flock->head;
   glm::vec4 v_modifier = zero_vec;
   while (current!=NULL){
-    v_modifier = g_w * (a_goal->pos - get_current_pos((BOID*)(current->data)));
+    v_modifier = ATTRACTION_WEIGHT*(a_goal->pos - get_current_pos((BOID*)(current->data)));
     ((BOID*)(current->data))->velocity += v_modifier;
     current = current->next;
   }
