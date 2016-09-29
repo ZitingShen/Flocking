@@ -51,10 +51,10 @@ const GLfloat A_BOID[][3] =
             {BOID_SIZE, -BOID_SIZE, 0}}; // position of the right vertex
 
 const GLfloat A_BOID_COLORS[][3] = {
-    {0.0, 0.0, 0.0}, 
+    {1.0, 1.0, 1.0}, 
     {BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]},
-    {0.0, 0.0, 0.0}, 
-    {0.0, 0.0, 0.0}};
+    {1.0, 1.0, 1.0}, 
+    {1.0, 1.0, 1.0}};
 
 const glm::vec3 centroid_init = glm::vec3(0,0,0);
 const glm::vec3 head_init = glm::vec3(0,BOID_SIZE*2,0);
