@@ -187,11 +187,17 @@ void draw_a_flock(List* a_flock){
     //update_rotation(some_boid);
     //glVertexPointer(3, GL_FLOAT, 0, A_BOID);
     glm::vec3 velocity3(some_boid->velocity);
+    velocity3 = glm::normalize(velocity3);
     glm::vec3 initial3(SPAWN_VELOCITY);
+    initial3 = glm::normalize(initial3);
     glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
     float angle = glm::orientedAngle(initial3, velocity3, 
-                                      rotate_normal);
+                                     rotate_normal);
 
+    std::cout << initial3.x << " " << initial3.y << " " << initial3.z << std::endl;
+    std::cout << velocity3.x << " " << velocity3.y << " " << velocity3.z << std::endl;
+    std::cout << rotate_normal.x << " " << rotate_normal.y << " " << rotate_normal.z << std::endl;
+    std::cout << angle << std::endl;
     glPushMatrix();
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
     glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
