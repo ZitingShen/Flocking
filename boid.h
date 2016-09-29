@@ -18,6 +18,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 #define PARTNER_RADIUS            20
 #define DEFAULT_FLOCK_SIZE        20
@@ -37,13 +38,23 @@ const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
 const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,10.0,0,0); //initial speed parallel with y-axis
 
 #define BOID_SIZE                 5
-const GLfloat A_BOID[][3] = 
-            {{0, 0, 0}, // position of the centroid
-            {0, BOID_SIZE*2, 0}, // position of the head
-            {-BOID_SIZE, -BOID_SIZE, 0}, // position of the left vertex
-            {BOID_SIZE, -BOID_SIZE, 0}}; // position of the right vertex;
+//const GLfloat A_BOID[][3] =
+//            {{0, 0, 0}, // position of the centroid
+//            {0, BOID_SIZE*2, 0}, // position of the head
+//            {-BOID_SIZE, -BOID_SIZE, 0}, // position of the left vertex
+//            {BOID_SIZE, -BOID_SIZE, 0}}; // position of the right vertex;
+
+const glm::vec3 centroid_init = glm::vec3(0,0,0);
+const glm::vec3 head_init = glm::vec3(0,BOID_SIZE*2,0);
+const glm::vec3 left_init = glm::vec3(-BOID_SIZE,-BOID_SIZE,0);
+const glm::vec3 right_init = glm::vec3(BOID_SIZE,-BOID_SIZE,0);
+
+
 const GLubyte A_BOID_VERTICES[6] = {0, 1, 2,
                                     0, 3, 1}; //drawing two triangles;
+
+extern GLfloat A_BOID[][3]; //to be defined in boid.cc
+
 
 typedef struct _boid{
   //glm::mat4 left_rotation;       // TODO: for flapping extra credit       
@@ -88,7 +99,7 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal, float g_w);
 void draw_a_flock(List* a_flock);
 
 glm::vec4 randomise_velocity(glm::vec4 raw_v);
-
+void update_rotation(BOID* a_boid);
 /* To DO */
 void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, float p_w);
 void apply_obstacle_avoidance(List* a_flock, OBSTACLE* an_obstable, float o_w);
