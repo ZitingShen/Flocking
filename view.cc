@@ -1,4 +1,5 @@
 #include "view.h"
+#include "gl_replacement.h"
 #include <iostream>
 
 void change_view(viewMode viewmode, int width, int height, List *flock, 
@@ -9,45 +10,82 @@ void change_view(viewMode viewmode, int width, int height, List *flock,
   float distance = get_d(flock, goal);
   glm::vec4 camera_pos;
   glm::vec4 flock_direction = glm::normalize(get_u(flock, goal));
+
+  GLfloat eye[3];
+  GLfloat centre[3];
+  GLfloat up[3];
   switch(viewmode) {
     case DEFAULT:
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
+    //gluPerspective(45, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
+    myPerspective(45, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, 0.01, TOWER_HEIGHT, midpoint.x, midpoint.y, 
-      midpoint.z, 0, 0, 1);
+    //gluLookAt(0, 0.01, TOWER_HEIGHT, midpoint.x, midpoint.y, 
+    //  midpoint.z, 0, 0, 1);
+    eye[0] = 0;
+    eye[1] = 0.01;
+    eye[2] = TOWER_HEIGHT;
+    centre[0] = midpoint[0];
+    centre[1] = midpoint[1];
+    centre[2] = midpoint[2];
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 1;
+    myLookAt(eye, centre, up);
     break;
 
     case TRAILING:
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(30, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
+    //gluPerspective(30, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
+    myPerspective(30, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     camera_pos = center
                  - flock_direction*(distance + 5*max_distance)*((float)0.5)
                  + glm::vec4(0, 0, 1, 0)*(distance + max_distance);
-    gluLookAt(camera_pos.x, camera_pos.y, camera_pos.z, midpoint.x, midpoint.y, 
-              midpoint.z, 0, 0, 1);
+    //gluLookAt(camera_pos.x, camera_pos.y, camera_pos.z, midpoint.x, midpoint.y, 
+    //          midpoint.z, 0, 0, 1);
+    eye[0] = camera_pos[0];
+    eye[1] = camera_pos[1];
+    eye[2] = camera_pos[2];
+    centre[0] = midpoint[0];
+    centre[1] = midpoint[1];
+    centre[2] = midpoint[2];
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 1;
+    myLookAt(eye, centre, up);
     break;
 
     case SIDE: {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(40, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
+    //gluPerspective(40, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
+    myPerspective(40, width*1.0/height, CAMERA_NEAR, CAMERA_FAR);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     glm::vec3 v3(flock_direction);
     glm::vec4 side_v = glm::vec4(glm::cross(v3, glm::vec3(0, 0, 1)), 0.0);
-    camera_pos = midpoint 
+    camera_pos = midpoint
                  + glm::normalize(side_v)*(distance + 2*max_distance)
                  + glm::vec4(0, 0, 1, 0)*(distance + max_distance);
-    gluLookAt(camera_pos.x, camera_pos.y, camera_pos.z, midpoint.x, midpoint.y, 
-              midpoint.z, 0, 0, 1);
+    //gluLookAt(camera_pos.x, camera_pos.y, camera_pos.z, midpoint.x, midpoint.y, 
+    //          midpoint.z, 0, 0, 1);
+    eye[0] = camera_pos[0];
+    eye[1] = camera_pos[1];
+    eye[2] = camera_pos[2];
+    centre[0] = midpoint[0];
+    centre[1] = midpoint[1];
+    centre[2] = midpoint[2];
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 1;
+    myLookAt(eye, centre, up);
     }
     break;
     default:
