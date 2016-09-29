@@ -25,8 +25,8 @@
 #define PARTNER_RADIUS            20
 #define DEFAULT_FLOCK_SIZE        5
 
-#define SEPARATION_WEIGHT         ((float) 0.01)
-#define ALIGNMENT_WEIGHT          ((float) 0.0004)
+#define SEPARATION_WEIGHT         ((float) 0.005)
+#define ALIGNMENT_WEIGHT          ((float) 0.002)
 #define COHESION_WEIGHT           ((float) 0.0004)
 #define ATTRACTION_WEIGHT         ((float) 0.0003)
 #define DETERRENCE_WEIGHT         ((float) 1.0) // this should be the most significant weight

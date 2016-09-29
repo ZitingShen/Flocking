@@ -1,8 +1,7 @@
 #include "boid.h"
-#include <iostream>
 
 BOID* new_boid(glm::vec4 velocity, float radius){
-  BOID* a_boid = new BOID;
+  BOID* a_boid = (BOID*)malloc(sizeof(BOID));
   a_boid->pos = SPAWN_POSITION;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
@@ -10,7 +9,7 @@ BOID* new_boid(glm::vec4 velocity, float radius){
 }
 
 BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos){
-  BOID* a_boid = new BOID;
+  BOID* a_boid = (BOID*)malloc(sizeof(BOID));
   a_boid->pos = pos;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
@@ -160,7 +159,7 @@ void init_a_flock(List* a_flock){
   int half_cube_length = default_cube_length/2;
 
   for (int i = 0; i < DEFAULT_FLOCK_SIZE; i++){
-    BOID* a_boid= new BOID;
+    BOID* a_boid= (BOID*)malloc(sizeof(BOID));
     a_boid->pos = SPAWN_POSITION;
     a_boid->velocity = SPAWN_VELOCITY;
     a_boid->partner_radius = PARTNER_RADIUS;
