@@ -30,7 +30,6 @@
 #define COHESION_WEIGHT           ((float) 0.005)
 #define ATTRACTION_WEIGHT         ((float) 0.0003)
 #define DETERRENCE_WEIGHT         ((float) 1.0) // this should be the most significant weight
-#define AVOIDANCE_WEIGHT          ((float) 0.8) // this should be significant as well
 
 #define RANDOMISE_V_FACTOR        45
 #define SPAWN_CUBE_LENGTH         50.0
@@ -39,7 +38,7 @@ const glm::vec4 ZERO_VEC = glm::vec4(0.0,0.0,0.0,0.0);
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
 const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.1,0,0); //initial speed parallel with y-axis
 
-const float BOID_COLOUR[3] = {0.6, 0.0, 0.0};
+const float BOID_COLOUR[3] = {0.474, 0.118, 0.114}; // using burgundy
 
 #define BOID_SIZE                 80
 const GLfloat A_BOID[][3] =
@@ -73,10 +72,6 @@ typedef struct _predator{
   float attack_range;
 } PREDATOR;
 
-typedef struct _obstacle{
-  glm::vec4 pos;
-  float avoidance_range;
-} OBSTACLE;
 BOID* new_boid(glm::vec4 velocity, float radius);
 BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos);
 
@@ -104,6 +99,6 @@ glm::vec4 randomise_velocity(glm::vec4 raw_v);
 //void update_rotation(BOID* a_boid);
 /* To DO */
 void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, float p_w);
-void apply_obstacle_avoidance(List* a_flock, OBSTACLE* an_obstable, float o_w);
+
 // Set speed cap as a global in main
 #endif

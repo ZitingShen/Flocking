@@ -1,8 +1,9 @@
-#ifndef GOAL_H
-#define GOAL_H
+#ifndef OBSTACLE_H
+#define OBSTACLE_H
 
+#include "list.h"
+#include "boid.h"
 #include <glm/glm.hpp>
-
 #ifdef __APPLE__
 #include <GLFW/glfw3.h>
 #include <OpenGL/glu.h>
@@ -11,46 +12,45 @@
 #include <GL/glu.h>
 #endif
 
-#define DEFAULT_ACCELERATION_FACTOR    0.01
-#define DEFAULT_ACCELERATION_MARGIN   0.05
-#define TRUE  1
-#define FALSE 0
+#define AVOIDANCE_WEIGHT          ((float) 0.8) // this should be significant as well
+#define DEFAULT_OBSTACLE_WIDTH     5000
+#define DEFAULT_OBSTACLE_HEIGHT    3000
+#define DEFAULT_OBSTACLE_LENGTH    1000
 
-const glm::vec4 DEFAULT_GOAL_SPAWN_VELOCITY = glm::vec4(1,1,0.01,0); // initiated with a positive speed on Z-axis
-const glm::vec4 DEFAULT_GOAL_SPAWN_POSITION = glm::vec4(1500,1500,1000,1);
+const glm::vec4 OBSTACLE_DEFAULT_LOCATION  = glm::vec4(0,0,1000,1);
+const float DEFAULT_AVOIDANCE_RANGE = 100.0;
 
-const GLfloat CUBE_VERTICES[][3] = {
+const GLfloat OBSTACLE_VERTICES[][3] = { // to be adjusted according to default
                            {-100.0, -10.0, 100.0},  {-100.0, 100.0, 100.0}, 
                            {100.0, 10.00, 100.0},    {100.0, -100.0, 100.0}, 
                            {-100.0, -100.0, -100.0}, {-100.0, 100.0, -100.0}, 
                            {100.0, 100.0, -100.0},   {100.0, -100.0, -100.0}};
 
-const GLfloat CUBE_COLORS[][3] = {{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, 
+
+
+const GLfloat OBSTACLE_COLORS[][3] = {{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, 
                                   {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}, 
                                   {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, 
                                   {1.0, 1.0, 1.0}, {0.0, 1.0, 1.0}};
-const GLubyte CUBE_INDICES[24] = {0, 3, 2, 1,
+
+const GLubyte OBSTACLE_INDICES[24] = {0, 3, 2, 1,
                                   2, 3, 7, 6,
                                   0, 4, 7, 3,
                                   1, 2, 6, 5,
                                   4, 5, 6, 7,
                                   0, 1, 5, 4};
 
-typedef struct _goal{
+
+typedef struct _obstacle{
   glm::vec4 pos;
-  glm::vec4 velocity;
-  bool MOVE_ALONG_X_POSITIVE;  // to control goal
-  bool MOVE_ALONG_X_NEGATIVE;
-  bool MOVE_ALONG_Y_POSITIVE;
-  bool MOVE_ALONG_Y_NEGATIVE;
-  bool ACCELERATE;
-  bool DECELERATE;
-} GOAL;
+  bool enable;
+  float avoidance_range;
+} OBSTACLE;
 
+OBSTACLE* new_obstacle();
+void toggle_obstable(OBSTACLE* an_obstacle);
+void draw_a_goal(OBSTACLE* an_obstacle);
 
-GOAL* new_goal();
-void update_goal_velocity(GOAL* a_goal);
-void update_goal_pos(GOAL* a_goal);
-void draw_a_goal(GOAL* a_goal);
+void apply_obstacle_avoidance(List* a_flock, OBSTACLE* an_obstable, float o_w);
 
 #endif
