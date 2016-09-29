@@ -1,11 +1,5 @@
 #include "boid.h"
-#include <iostream>
-/*
-GLfloat A_BOID[][3] = {{0,0,0},
-                       {0,0,0},
-                       {0,0,0},
-                       {0,0,0}};
-*/
+
 BOID* new_boid(glm::vec4 velocity, float radius){
   BOID* a_boid = new BOID;
   a_boid->pos = SPAWN_POSITION;
@@ -99,7 +93,6 @@ glm::vec4 flock_centroid(List* a_flock){
 glm::vec4 mid_point(List* a_flock, GOAL* a_goal){
   if (a_flock == NULL || a_flock->length == 0) return zero_vec;
   return (flock_centroid(a_flock)+(a_goal->pos))*(0.5f);
-  //return (flock_centroid(a_flock)+(a_goal->pos));
 }
 
 glm::vec4 get_u(List* a_flock, GOAL* a_goal){
@@ -184,20 +177,14 @@ void draw_a_flock(List* a_flock){
 
   for (int i = 0; i < a_flock->length; i++){
     some_boid = (BOID*)(current->data);
-    //update_rotation(some_boid);
-    //glVertexPointer(3, GL_FLOAT, 0, A_BOID);
     glm::vec3 velocity3(some_boid->velocity);
     velocity3 = glm::normalize(velocity3);
     glm::vec3 initial3(SPAWN_VELOCITY);
     initial3 = glm::normalize(initial3);
     glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
     float angle = glm::orientedAngle(initial3, velocity3, 
-                                     rotate_normal);
+                                     rotate_normal)*180/PI;
 
-    std::cout << initial3.x << " " << initial3.y << " " << initial3.z << std::endl;
-    std::cout << velocity3.x << " " << velocity3.y << " " << velocity3.z << std::endl;
-    std::cout << rotate_normal.x << " " << rotate_normal.y << " " << rotate_normal.z << std::endl;
-    std::cout << angle << std::endl;
     glPushMatrix();
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
     glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
@@ -232,36 +219,3 @@ glm::vec4 randomise_velocity(glm::vec4 raw_v){
 
   return new_velocity;
 }
-/*
-void update_rotation(BOID* a_boid){
-  glm::vec3 new_head = glm::vec3(a_boid->velocity[0],a_boid->velocity[1],a_boid->velocity[2]);
-  glm::vec3 x_axis_ref = glm::vec3(1,0,0);
-  glm::vec3 y_axis_ref = glm::vec3(1,0,0);
-  glm::vec3 z_axis_ref = glm::vec3(0,0,1); //using z-aixs as the reference angle
-  glm::vec3 new_left, new_right;
-
-  float angleX = glm::orientedAngle(head_init, new_head, x_axis_ref);
-  float angleY = glm::orientedAngle(head_init, new_head, y_axis_ref);
-  float angleZ = glm::orientedAngle(head_init, new_head, z_axis_ref);
-
-  new_left = glm::rotateX(left_init, angleX);
-  new_left = glm::rotateY(left_init, angleY);
-  new_left = glm::rotateZ(left_init, angleZ);
-  new_right = glm::rotateX(right_init, angleX);
-  new_right = glm::rotateY(right_init, angleY);
-  new_right = glm::rotateZ(right_init, angleZ);
-
-  A_BOID[0][0] = a_boid->pos[0];
-  A_BOID[0][1] = a_boid->pos[1];
-  A_BOID[0][2] = a_boid->pos[2];
-  A_BOID[1][0] = new_head[0];
-  A_BOID[1][1] = new_head[1];
-  A_BOID[1][2] = new_head[2];
-  A_BOID[2][0] = new_left[0];
-  A_BOID[2][1] = new_left[1];
-  A_BOID[2][2] = new_left[2];
-  A_BOID[3][0] = new_right[0];
-  A_BOID[3][1] = new_right[1];
-  A_BOID[3][2] = new_right[2];
-}
-*/

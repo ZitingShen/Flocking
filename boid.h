@@ -20,6 +20,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
+#define PI                        3.141592
+
 #define PARTNER_RADIUS            20
 #define DEFAULT_FLOCK_SIZE        20
 
@@ -52,8 +54,6 @@ const glm::vec3 right_init = glm::vec3(BOID_SIZE,-BOID_SIZE,0);
 
 const GLubyte A_BOID_VERTICES[6] = {0, 1, 2,
                                     0, 3, 1}; //drawing two triangles;
-
-//extern GLfloat A_BOID[][3]; //to be defined in boid.cc
 
 
 typedef struct _boid{
