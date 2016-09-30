@@ -22,28 +22,30 @@
 
 #define PI                        3.141592
 
-#define PARTNER_RADIUS            20
+#define PARTNER_RADIUS            200
 #define DEFAULT_FLOCK_SIZE        20
+#define DEFAULT_FLOCK_NUM         2
 
-#define SEPARATION_WEIGHT         ((float) 0.1)
+#define SEPARATION_WEIGHT         ((float) 0.02)
 #define ALIGNMENT_WEIGHT          ((float) 0.01)
-#define COHESION_WEIGHT           ((float) 0.005)
-#define ATTRACTION_WEIGHT         ((float) 0.0003)
-#define DETERRENCE_WEIGHT         ((float) 1.0) // this should be the most significant weight
+#define COHESION_WEIGHT           ((float) 0.01)
+#define ATTRACTION_WEIGHT         ((float) 0.05)
+#define DETERRENCE_WEIGHT         ((float) 0.02) // this should be the most significant weight
+#define MAX_ATTRACTION_INFLUENCE  ((float) 10.0)
 
-#define MAX_WING_ROTATION         90
+#define MAX_WING_ROTATION         45
 #define WING_ROTATION_PER_FRAME   0.1
 
 #define RANDOMISE_V_FACTOR        45
-#define SPAWN_CUBE_LENGTH         50.0
-const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,999.0,1);
+#define SPAWN_CUBE_LENGTH         200.0
+const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,1000.0,1);
 const glm::vec4 ZERO_VEC = glm::vec4(0.0,0.0,0.0,0.0);
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
-const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.1,0,0); //initial speed parallel with y-axis
+const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.001,0,0); //initial speed parallel with y-axis
 
 const float BOID_COLOUR[3] = {0.474, 0.118, 0.114}; // using burgundy
 
-#define BOID_SIZE                 80
+#define BOID_SIZE                 200
 const GLfloat A_BOID[][3] =
             {{0, 0, 0}, // position of the centroid
             {0, BOID_SIZE*2, 0}, // position of the head
@@ -66,9 +68,10 @@ const GLubyte A_BOID_RIGHT[3] = {0, 3, 1}; //drawing two triangles;
 
 typedef struct _boid{
   GLfloat wing_rotation;          // for flapping extra credit
-  int wing_rotation_direction;     
+  int wing_rotation_direction;
+  int flock_index;  
   glm::vec4 pos;
-  glm::vec4 velocity;             // also determines PA direction; and the degrees of rotation
+  glm::vec4 velocity;             // also determines PA direction; and the degrees of rotation   
   float partner_radius;           // the radius within which it looks for partners
 } BOID;
 

@@ -1,6 +1,5 @@
 #include "flocking.h"
 
-List* FLOCKS = NULL;
 List* A_FLOCK = NULL;
 GOAL* A_GOAL;
 int IS_PAUSED = GLFW_FALSE;

@@ -24,7 +24,7 @@ const GLfloat A_SQUARE[][3]=
             {0, BG_SQUARE_SIDE, 0}};
 
 const float CHESS_BOARD_COLOUR_X[3] = {0.449,0.451,0.494};  //grey
-const float CHESS_BOARD_COLOUR_Y[3] = {0.0, 0.0, 0.0};	   //black
+const float CHESS_BOARD_COLOUR_Y[3] = {0.0, 0.0, 0.0};     //black
 
 typedef enum viewMode {DEFAULT, TRAILING, SIDE} viewMode;
 

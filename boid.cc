@@ -4,11 +4,11 @@
 BOID* new_boid(){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
   a_boid->pos = SPAWN_POSITION;
-  a_boid->velocity = SPAWN_VELOCITY;
+  a_boid->velocity = randomise_velocity(SPAWN_VELOCITY);
   a_boid->partner_radius = PARTNER_RADIUS;
   a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION) 
                           - MAX_WING_ROTATION;
-  //std::cout << a_boid->wing_rotation << std::endl;
+  a_boid->flock_index = rand()%(DEFAULT_FLOCK_NUM);
   a_boid->wing_rotation_direction = 1;
   return a_boid;
 }
@@ -20,6 +20,7 @@ BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos){
   a_boid->partner_radius = radius;
   a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION) 
                           - MAX_WING_ROTATION;
+  a_boid->flock_index = rand()%(DEFAULT_FLOCK_NUM);
   a_boid->wing_rotation_direction = 1;
   return a_boid;
 }
@@ -33,16 +34,19 @@ void update_velocity(List* a_flock){
   if (a_flock == NULL || a_flock->length < 2) return;
   NODE* current_boid = a_flock->head;
   NODE* potential_partner;
-  glm::vec4 s_modifier, a_modifier, c_modifier;
+  glm::vec4 s_modifier, a_modifier, c_modifier, f_modifier;
   int num_of_partners;
+  int num_of_boids_other_flocks;
 
   BOID* source = NULL;
   BOID* target = NULL;
   while (current_boid != NULL){
     num_of_partners = 0; //reset for the next boid
+    num_of_boids_other_flocks = 0;
     s_modifier = ZERO_VEC;
     a_modifier = ZERO_VEC;
     c_modifier = ZERO_VEC;
+    f_modifier = ZERO_VEC;
     potential_partner = a_flock->head;
     num_of_partners = 0;
     while (potential_partner != NULL){
@@ -53,10 +57,15 @@ void update_velocity(List* a_flock){
       source = (BOID*)(current_boid->data);
       target = (BOID*)(potential_partner->data);
       if (is_partner(source, target)){
-        num_of_partners++;
-        s_modifier += source->pos - target->pos;
-        a_modifier += target->velocity;
-        c_modifier += target->pos;
+        if (target->flock_index == source->flock_index) {
+          num_of_partners++;
+          s_modifier += source->pos - target->pos;
+          a_modifier += target->velocity;
+          c_modifier += target->pos;
+        } else {
+          num_of_boids_other_flocks++;
+          f_modifier += source->pos - target->pos;
+        }
       }
       potential_partner=potential_partner->next;
     }
@@ -64,9 +73,12 @@ void update_velocity(List* a_flock){
       s_modifier = SEPARATION_WEIGHT*(s_modifier/(float)num_of_partners);
       a_modifier = ALIGNMENT_WEIGHT*(a_modifier/(float)num_of_partners - source->velocity);
       c_modifier = COHESION_WEIGHT*(c_modifier/(float)num_of_partners - source->pos);
+      source->velocity += (s_modifier+a_modifier+c_modifier);
     }
-
-    source->velocity += (s_modifier+a_modifier+c_modifier);
+    if (num_of_boids_other_flocks != 0) {
+      f_modifier = DETERRENCE_WEIGHT*(f_modifier/(float)num_of_boids_other_flocks);
+      source->velocity += f_modifier;
+    }
     current_boid = current_boid->next;
   }
 }
@@ -256,7 +268,13 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
   NODE* current=a_flock->head;
   glm::vec4 v_modifier = ZERO_VEC;
   while (current!=NULL){
-    v_modifier = ATTRACTION_WEIGHT*(a_goal->pos - get_current_pos((BOID*)(current->data)));
+    v_modifier = (a_goal->pos - get_current_pos((BOID*)(current->data)));
+    if (glm::length(v_modifier) > MAX_ATTRACTION_INFLUENCE) {
+      v_modifier = glm::normalize(v_modifier)*MAX_ATTRACTION_INFLUENCE;
+    } //else {
+      //v_modifier = glm::normalize(v_modifier)*glm::distance(a_goal->pos, ((BOID*)(current->data))->pos)*((float)0.0001);
+    //}
+    v_modifier = ATTRACTION_WEIGHT*v_modifier;
     ((BOID*)(current->data))->velocity += v_modifier;
     current = current->next;
   }

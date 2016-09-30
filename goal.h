@@ -11,12 +11,12 @@
 #include <GL/glu.h>
 #endif
 
-#define DEFAULT_ACCELERATION_FACTOR    0.01
+#define DEFAULT_ACCELERATION_FACTOR    0.1
 #define DEFAULT_ACCELERATION_MARGIN   0.05
 #define TRUE  1
 #define FALSE 0
 
-const glm::vec4 DEFAULT_GOAL_SPAWN_VELOCITY = glm::vec4(1,1,0.01,0); // initiated with a positive speed on Z-axis
+const glm::vec4 DEFAULT_GOAL_SPAWN_VELOCITY = glm::vec4(2,2,0.01,0); // initiated with a positive speed on Z-axis
 const glm::vec4 DEFAULT_GOAL_SPAWN_POSITION = glm::vec4(1500,1500,1000,1);
 
 const GLfloat CUBE_VERTICES[][3] = {
