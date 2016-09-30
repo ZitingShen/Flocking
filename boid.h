@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <iostream>
 
 #ifdef __APPLE__
 #include <GLFW/glfw3.h>
@@ -20,7 +21,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-#define PI                        3.141592
+
+#define RADIAN_TO_DEGREE          57.29578 // 180 over pi
 
 #define PARTNER_RADIUS            200
 #define DEFAULT_FLOCK_SIZE        20
@@ -104,6 +106,8 @@ void init_a_flock(List* a_flock);
 
 void apply_goal_attraction(List* a_flock, GOAL* a_goal);
 void draw_a_flock(List* a_flock);
+
+void print_flock(List* a_flock);
 
 glm::vec4 randomise_velocity(glm::vec4 raw_v);
 //void update_rotation(BOID* a_boid);
