@@ -20,9 +20,7 @@
 //#include "obstacle.h"
 
 void init();
-void draw_cube();
 void reshape(GLFWwindow* window, int w, int h);
 void framebuffer_resize(GLFWwindow* window, int width, int height);
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods);
-void move_boids_pos(List* a_flock, GLfloat** boid_poly);
 #endif

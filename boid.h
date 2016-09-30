@@ -1,4 +1,4 @@
-#ifndef BOID_H
+#ifndef BOID_H 
 #define BOID_H
 
 #include "list.h"
@@ -32,7 +32,7 @@
 #define ALIGNMENT_WEIGHT          ((float) 0.01)
 #define COHESION_WEIGHT           ((float) 0.01)
 #define ATTRACTION_WEIGHT         ((float) 0.05)
-#define DETERRENCE_WEIGHT         ((float) 0.5) // this should be the most significant weight
+#define DETERRENCE_WEIGHT         ((float) 0.5) // the most significant weight
 #define MAX_ATTRACTION_INFLUENCE  ((float) 10.0)
 
 #define MAX_WING_ROTATION         45
@@ -46,10 +46,15 @@ const glm::vec4 SPAWN_POSITION_II = glm::vec4(-1000.0,-1000.0, 500.0, 1);
 
 const glm::vec4 ZERO_VEC = glm::vec4(0.0,0.0,0.0,0.0);
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
-const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.01,0,0); //initial speed parallel with y-axis
+ //initial speed parallel with y-axis
+const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.01,0,0);
 
-const float BOID_COLOUR_FLOCK_I[3] = {0.474, 0.118, 0.114};  // using burgundy for flock I
-const float BOID_COLOUR_FLOCK_II[3] = {0.420, 0.792, 0.886}; // using aquamarine for flock II
+// using burgundy for flock I
+const GLfloat BOID_COLOUR_FLOCK_I[3] = {0.474, 0.118, 0.114};
+// using aquamarine for flock II
+const GLfloat BOID_COLOUR_FLOCK_II[3] = {0.420, 0.792, 0.886};
+const GLfloat SHADES_COLOR[3] = {0.182, 0.008, 0.235};
+#define SHADES_HEIGHT             50.0
 
 #define BOID_SIZE                 100
 
@@ -81,7 +86,7 @@ const GLubyte A_BOID_RIGHT[3] = {0, 3, 1}; //drawing two triangles;
 
 typedef struct _boid{
   GLfloat wing_rotation;          // for flapping extra credit
-  int wing_rotation_direction;
+  int wing_rotation_direction;    // 1 for downwards, 0 for upwards
   int flock_index;  
   glm::vec4 pos;
   glm::vec4 velocity;             // also determines PA direction; and the degrees of rotation   
@@ -119,11 +124,7 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal);
 void draw_a_flock(List* a_flock);
 
 void print_flock(List* a_flock);
-
-glm::vec4 randomise_velocity(glm::vec4 raw_v);
 //void update_rotation(BOID* a_boid);
 /* To DO */
 void apply_predator_deterrence(List* a_flock, PREDATOR* a_predator, float p_w);
-
-// Set speed cap as a global in main
 #endif

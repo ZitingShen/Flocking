@@ -4,12 +4,11 @@ using namespace std;
 
 BOID* new_boid(){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
-  a_boid->velocity = randomise_velocity(SPAWN_VELOCITY);
+  a_boid->velocity = SPAWN_VELOCITY;
   a_boid->partner_radius = PARTNER_RADIUS;
   a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION)
                           - MAX_WING_ROTATION;
   a_boid->flock_index = rand()%(DEFAULT_FLOCK_NUM);
-
 
   a_boid->pos = (a_boid->flock_index==0)?SPAWN_POSITION_I:SPAWN_POSITION_II;
   a_boid->wing_rotation_direction = 1;
@@ -183,8 +182,7 @@ void add_a_boid(List* a_flock){
   pos.z = target->pos.z + (rand() % default_cube_length) - half_cube_length;
   pos.w = 1;
 
-  list_insert(a_flock, new_boid(randomise_velocity(target->velocity),
-                                PARTNER_RADIUS, pos), 0);
+  list_insert(a_flock, new_boid(target->velocity, PARTNER_RADIUS, pos), 0);
 }
 
 void remove_a_boid(List* a_flock){
@@ -211,14 +209,11 @@ void draw_a_flock(List* a_flock){
   BOID* some_boid = NULL;
 
   glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_BOID);
   
 
   current = a_flock->head;
   for (int i = 0; i < a_flock->length; i++){
-    
-
 
     some_boid = (BOID*)(current->data);
     glm::vec3 velocity3(some_boid->velocity);
@@ -228,47 +223,42 @@ void draw_a_flock(List* a_flock){
     glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
     float angle = glm::orientedAngle(initial3, velocity3, 
                                      rotate_normal)*RADIAN_TO_DEGREE;
+    float shades_angle = glm::orientedAngle(initial3, velocity3, 
+                                            glm::vec3(0, 0, 1))*RADIAN_TO_DEGREE;
 
+    glEnableClientState(GL_COLOR_ARRAY);
     glColorPointer(3, GL_FLOAT, 0, (some_boid->flock_index==0)?A_BOID_COLORS:ANOTHER_BOID_COLORS);
 
-    glPushMatrix();
+    glPushMatrix(); // tranformation for boids
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
     glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
-    glPushMatrix();
+    
+    glPushMatrix(); // draw left wings
     glRotatef(-some_boid->wing_rotation, 0, 1, 0);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
     glPopMatrix();
-    glRotatef(some_boid->wing_rotation, 0, 1, 0);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);
+    
+    glRotatef(some_boid->wing_rotation, 0, 1, 0); // draw right wings
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);  
     glPopMatrix();
+
+    glDisableClientState(GL_COLOR_ARRAY);
+    glColor3f(SHADES_COLOR[0], SHADES_COLOR[1], SHADES_COLOR[2]);
+    
+    glPushMatrix(); // transformation for shades
+    glTranslatef(some_boid->pos.x, some_boid->pos.y, SHADES_HEIGHT);
+    glRotatef(shades_angle, 0, 0, 1);
+    
+    glPushMatrix(); // draw left wings
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
+    glPopMatrix();
+    
+    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT); // draw right wings
+    glPopMatrix();
+
     current = current->next;
   }
 
-  glDisableClientState(GL_COLOR_ARRAY);
-  /*glColor3f(BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]);
-  current = a_flock->head;
-  for (int i = 0; i < a_flock->length; i++){
-    some_boid = (BOID*)(current->data);
-    glm::vec3 velocity3(some_boid->velocity);
-    velocity3 = glm::normalize(velocity3);
-    glm::vec3 initial3(SPAWN_VELOCITY);
-    initial3 = glm::normalize(initial3);
-    glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
-    float angle = glm::orientedAngle(initial3, velocity3, 
-                                     rotate_normal)*RADIAN_TO_DEGREE;
-
-    glPushMatrix();
-    glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
-    glRotatef(angle, rotate_normal.x, rotate_normal.y, rotate_normal.z);
-    glPushMatrix();
-    glRotatef(-some_boid->wing_rotation, 0, 1, 0);
-    glDrawElements(GL_LINE_LOOP, 3, GL_UNSIGNED_BYTE, A_BOID_LEFT);
-    glPopMatrix();
-    glRotatef(some_boid->wing_rotation, 0, 1, 0);
-    glDrawElements(GL_LINE_LOOP, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);
-    glPopMatrix();
-    current = current->next;
-  }*/
   glDisableClientState(GL_VERTEX_ARRAY);
 }
 
@@ -279,9 +269,7 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
     v_modifier = (a_goal->pos - get_current_pos((BOID*)(current->data)));
     if (glm::length(v_modifier) > MAX_ATTRACTION_INFLUENCE) {
       v_modifier = glm::normalize(v_modifier)*MAX_ATTRACTION_INFLUENCE;
-    } //else {
-      //v_modifier = glm::normalize(v_modifier)*glm::distance(a_goal->pos, ((BOID*)(current->data))->pos)*((float)0.0001);
-    //}
+    }
     v_modifier = ATTRACTION_WEIGHT*v_modifier;
     ((BOID*)(current->data))->velocity += v_modifier;
     current = current->next;
@@ -295,18 +283,4 @@ void print_flock(List* a_flock) {
   float radius = flock_radius(a_flock);
   cout << "The flock's radius: " << radius << endl;
   cout << endl;
-}
-
-glm::vec4 randomise_velocity(glm::vec4 raw_v){
-  glm::vec4 new_velocity;
-  
-  new_velocity = glm::rotateX(raw_v,
-                       (float)(rand()%(2*RANDOMISE_V_FACTOR)-RANDOMISE_V_FACTOR));
-
-  new_velocity = glm::rotateY(raw_v,
-                       (float)(rand()%(2*RANDOMISE_V_FACTOR)-RANDOMISE_V_FACTOR));
-
-  new_velocity = glm::rotateZ(raw_v,
-                       (float)(rand()%(2*RANDOMISE_V_FACTOR)-RANDOMISE_V_FACTOR));
-  return new_velocity;
 }

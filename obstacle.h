@@ -31,8 +31,6 @@ const GLfloat OBSTACLE_VERTICES[][3] = { // to be adjusted according to default
                            {DEFAULT_OBSTACLE_LENGTH, DEFAULT_OBSTACLE_WIDTH, -DEFAULT_OBSTACLE_HEIGHT},
                            {DEFAULT_OBSTACLE_LENGTH, -DEFAULT_OBSTACLE_WIDTH, -DEFAULT_OBSTACLE_HEIGHT}};
 
-
-
 const GLfloat OBSTACLE_COLORS[][3] = {{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}, 
                                   {1.0, 1.0, 0.0}, {0.0, 1.0, 0.0}, 
                                   {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, 
