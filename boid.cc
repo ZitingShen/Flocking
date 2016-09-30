@@ -1,5 +1,6 @@
 #include "boid.h"
-#include <iostream>
+
+using namespace std;
 
 BOID* new_boid(){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
@@ -226,7 +227,7 @@ void draw_a_flock(List* a_flock){
     initial3 = glm::normalize(initial3);
     glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
     float angle = glm::orientedAngle(initial3, velocity3, 
-                                     rotate_normal)*180/PI;
+                                     rotate_normal)*RADIAN_TO_DEGREE;
 
     glColorPointer(3, GL_FLOAT, 0, (some_boid->flock_index==0)?A_BOID_COLORS:ANOTHER_BOID_COLORS);
 
@@ -254,7 +255,7 @@ void draw_a_flock(List* a_flock){
     initial3 = glm::normalize(initial3);
     glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
     float angle = glm::orientedAngle(initial3, velocity3, 
-                                     rotate_normal)*180/PI;
+                                     rotate_normal)*RADIAN_TO_DEGREE;
 
     glPushMatrix();
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
@@ -285,6 +286,15 @@ void apply_goal_attraction(List* a_flock, GOAL* a_goal){
     ((BOID*)(current->data))->velocity += v_modifier;
     current = current->next;
   }
+}
+
+void print_flock(List* a_flock) {
+  glm::vec4 centroid = flock_centroid(a_flock);
+  cout << "The flock's centroid: " << centroid.x << ", " 
+  << centroid.y << ", " << centroid.z << endl;
+  float radius = flock_radius(a_flock);
+  cout << "The flock's radius: " << radius << endl;
+  cout << endl;
 }
 
 glm::vec4 randomise_velocity(glm::vec4 raw_v){

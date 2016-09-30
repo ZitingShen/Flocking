@@ -1,5 +1,7 @@
 #include "goal.h"
 
+using namespace std;
+
 GOAL* new_goal(){
 	GOAL* a_goal = new GOAL;
 	a_goal->pos = DEFAULT_GOAL_SPAWN_POSITION;
@@ -69,4 +71,12 @@ void draw_a_goal(GOAL* a_goal){
   glPopMatrix();
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void print_goal(GOAL* a_goal) {
+  cout << "The goal's position: " << a_goal->pos.x << ", "
+  << a_goal->pos.y << ", " << a_goal->pos.z << endl;
+  cout << "The goal's velocity: " << a_goal->velocity.x << ", "
+  << a_goal->velocity.y << ", " << a_goal->velocity.z << endl;
+  cout << endl;
 }

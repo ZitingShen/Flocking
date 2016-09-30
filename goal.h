@@ -2,7 +2,7 @@
 #define GOAL_H
 
 #include <glm/glm.hpp>
-
+#include <iostream>
 #ifdef __APPLE__
 #include <GLFW/glfw3.h>
 #include <OpenGL/glu.h>
@@ -52,5 +52,5 @@ GOAL* new_goal();
 void update_goal_velocity(GOAL* a_goal);
 void update_goal_pos(GOAL* a_goal);
 void draw_a_goal(GOAL* a_goal);
-
+void print_goal(GOAL* a_goal);
 #endif

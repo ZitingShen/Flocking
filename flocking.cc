@@ -1,7 +1,7 @@
 #include "flocking.h"
 
 List* A_FLOCK = NULL;
-GOAL* A_GOAL;
+GOAL* A_GOAL = NULL;
 int IS_PAUSED = GLFW_FALSE;
 int PAUSE_TIME = 0;
 viewMode VIEW_MODE = DEFAULT;
@@ -54,6 +54,8 @@ int main(int argc, char** argv) {
       }
       glfwSwapBuffers(window);
       if (IS_PAUSED && PAUSE_TIME > 0) {
+        print_goal(A_GOAL);
+        print_flock(A_FLOCK);
         PAUSE_TIME--;
       }
     }
