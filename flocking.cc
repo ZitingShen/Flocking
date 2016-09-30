@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
 
 void init() {
   // set the background color to white
-  glClearColor(1.0, 1.0, 1.0, 1.0);
+  glClearColor(CLEAR_COLOR[0], CLEAR_COLOR[1], CLEAR_COLOR[2], 1.0);
   // Set the drawing color to black
   glColor3f(0.0, 0.0, 0.0);
   // initialise a flock of boid

@@ -48,8 +48,10 @@ const glm::vec4 ZERO_VEC = glm::vec4(0.0,0.0,0.0,0.0);
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
 const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.01,0,0); //initial speed parallel with y-axis
 
-const float BOID_COLOUR_FLOCK_I[3] = {0.474, 0.118, 0.114};  // using burgundy for flock I
-const float BOID_COLOUR_FLOCK_II[3] = {0.420, 0.792, 0.886}; // using aquamarine for flock II
+const GLfloat BOID_COLOUR_FLOCK_I[3] = {0.474, 0.118, 0.114};  // using burgundy for flock I
+const GLfloat BOID_COLOUR_FLOCK_II[3] = {0.420, 0.792, 0.886}; // using aquamarine for flock II
+const GLfloat SHADES_COLOR[3] = {0.182, 0.008, 0.235};
+#define SHADES_HEIGHT             100.0
 
 #define BOID_SIZE                 100
 
