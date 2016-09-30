@@ -2,6 +2,8 @@
 
 List* A_FLOCK = NULL;
 GOAL* A_GOAL = NULL;
+//OBSTACLE* AN_OBSTACLE = NULL;
+
 int IS_PAUSED = GLFW_FALSE;
 int PAUSE_TIME = 0;
 viewMode VIEW_MODE = DEFAULT;
@@ -46,6 +48,10 @@ int main(int argc, char** argv) {
       update_velocity(A_FLOCK);
       update_wing_rotation(A_FLOCK);
       apply_goal_attraction(A_FLOCK, A_GOAL);
+      //if (AN_OBSTACLE->enable){
+      //  apply_obstacle_avoidance(A_FLOCK, AN_OBSTACLE);
+      //  draw_an_obstacle(AN_OBSTACLE);
+      //}
       update_pos(A_FLOCK);
       if(glfwGetWindowAttrib(window, GLFW_VISIBLE)){
         draw_background(SQUARES_POS);
@@ -72,6 +78,7 @@ void init() {
   // initialise a flock of boid
   A_FLOCK = list_new();
   A_GOAL = new_goal();
+  //AN_OBSTACLE = new_obstacle();
   srand(time(NULL));
   init_a_flock(A_FLOCK);
   init_background(SQUARES_POS);
@@ -83,6 +90,12 @@ void framebuffer_resize(GLFWwindow* window, int width, int height) {
 
 void reshape(GLFWwindow* window, int w, int h) {
   change_view(VIEW_MODE, w, h, A_FLOCK, A_GOAL);
+}
+
+void cleanup(){
+  free(A_GOAL);
+  //free(AN_OBSTACLE);
+  list_destroy(A_FLOCK);
 }
 
 void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
@@ -142,6 +155,10 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
       A_GOAL->DECELERATE = true;
       break;
 
+      //case GLFW_KEY_B:
+      //AN_OBSTACLE->enable = !AN_OBSTACLE->enable;
+      //break;
+
       case GLFW_KEY_Q:
       case GLFW_KEY_ESCAPE:
       glfwSetWindowShouldClose(w, GLFW_TRUE);
@@ -165,7 +182,7 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
 
       case GLFW_KEY_S: // decrease y velocity
       A_GOAL->MOVE_ALONG_Y_NEGATIVE = false;
-      
+
       case GLFW_KEY_RIGHT:
       A_GOAL->ACCELERATE = false;
       break;

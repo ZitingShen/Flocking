@@ -17,6 +17,7 @@
 #include "view.h"
 #include "boid.h"
 #include "flocking.h"
+//#include "obstacle.h"
 
 void init();
 void draw_cube();

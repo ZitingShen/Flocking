@@ -12,19 +12,24 @@
 #include <GL/glu.h>
 #endif
 
-#define AVOIDANCE_WEIGHT          ((float) 0.8) // this should be significant as well
+#define AVOIDANCE_WEIGHT          ((float) 1.05) // this should be significant as well
 #define DEFAULT_OBSTACLE_WIDTH     5000
 #define DEFAULT_OBSTACLE_HEIGHT    3000
 #define DEFAULT_OBSTACLE_LENGTH    1000
 
 const glm::vec4 OBSTACLE_DEFAULT_LOCATION  = glm::vec4(0,0,1000,1);
+
 const float DEFAULT_AVOIDANCE_RANGE = 100.0;
 
 const GLfloat OBSTACLE_VERTICES[][3] = { // to be adjusted according to default
-                           {-100.0, -10.0, 100.0},  {-100.0, 100.0, 100.0}, 
-                           {100.0, 10.00, 100.0},    {100.0, -100.0, 100.0}, 
-                           {-100.0, -100.0, -100.0}, {-100.0, 100.0, -100.0}, 
-                           {100.0, 100.0, -100.0},   {100.0, -100.0, -100.0}};
+                           {-DEFAULT_OBSTACLE_LENGTH, -DEFAULT_OBSTACLE_WIDTH, DEFAULT_OBSTACLE_HEIGHT},
+                           {-DEFAULT_OBSTACLE_LENGTH, DEFAULT_OBSTACLE_WIDTH, DEFAULT_OBSTACLE_HEIGHT},
+                           {DEFAULT_OBSTACLE_LENGTH, DEFAULT_OBSTACLE_WIDTH, DEFAULT_OBSTACLE_HEIGHT},
+                           {DEFAULT_OBSTACLE_LENGTH, -DEFAULT_OBSTACLE_WIDTH, DEFAULT_OBSTACLE_HEIGHT},
+                           {-DEFAULT_OBSTACLE_LENGTH, -DEFAULT_OBSTACLE_WIDTH, -DEFAULT_OBSTACLE_HEIGHT},
+                           {-DEFAULT_OBSTACLE_LENGTH, DEFAULT_OBSTACLE_WIDTH, -DEFAULT_OBSTACLE_HEIGHT},
+                           {DEFAULT_OBSTACLE_LENGTH, DEFAULT_OBSTACLE_WIDTH, -DEFAULT_OBSTACLE_HEIGHT},
+                           {DEFAULT_OBSTACLE_LENGTH, -DEFAULT_OBSTACLE_WIDTH, -DEFAULT_OBSTACLE_HEIGHT}};
 
 
 
@@ -49,8 +54,8 @@ typedef struct _obstacle{
 
 OBSTACLE* new_obstacle();
 void toggle_obstable(OBSTACLE* an_obstacle);
-void draw_a_goal(OBSTACLE* an_obstacle);
+void draw_an_obstacle(OBSTACLE* an_obstacle);
 
-void apply_obstacle_avoidance(List* a_flock, OBSTACLE* an_obstable, float o_w);
+void apply_obstacle_avoidance(List* a_flock, OBSTACLE* an_obstable);
 
 #endif
