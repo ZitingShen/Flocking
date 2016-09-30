@@ -16,8 +16,8 @@
 #define TRUE  1
 #define FALSE 0
 
-const glm::vec4 DEFAULT_GOAL_SPAWN_VELOCITY = glm::vec4(2,2,0.01,0); // initiated with a positive speed on Z-axis
-const glm::vec4 DEFAULT_GOAL_SPAWN_POSITION = glm::vec4(1500,1500,1000,1);
+const glm::vec4 DEFAULT_GOAL_SPAWN_VELOCITY = glm::vec4(10,10,0.01,0); // initiated with a positive speed on Z-axis
+const glm::vec4 DEFAULT_GOAL_SPAWN_POSITION = glm::vec4(0,5000,1000,1);
 
 const GLfloat CUBE_VERTICES[][3] = {
                            {-100.0, -10.0, 100.0},  {-100.0, 100.0, 100.0}, 

@@ -22,7 +22,7 @@
 
 #define PI                        3.141592
 
-#define PARTNER_RADIUS            200
+#define PARTNER_RADIUS            100
 #define DEFAULT_FLOCK_SIZE        20
 #define DEFAULT_FLOCK_NUM         2
 
@@ -30,22 +30,27 @@
 #define ALIGNMENT_WEIGHT          ((float) 0.01)
 #define COHESION_WEIGHT           ((float) 0.01)
 #define ATTRACTION_WEIGHT         ((float) 0.05)
-#define DETERRENCE_WEIGHT         ((float) 0.02) // this should be the most significant weight
+#define DETERRENCE_WEIGHT         ((float) 0.5) // this should be the most significant weight
 #define MAX_ATTRACTION_INFLUENCE  ((float) 10.0)
 
 #define MAX_WING_ROTATION         45
 #define WING_ROTATION_PER_FRAME   0.1
 
 #define RANDOMISE_V_FACTOR        45
-#define SPAWN_CUBE_LENGTH         200.0
-const glm::vec4 SPAWN_POSITION = glm::vec4(0.0,0.0,1000.0,1);
+#define SPAWN_CUBE_LENGTH         100.0
+
+const glm::vec4 SPAWN_POSITION_I  = glm::vec4(1000.0,1000.0,1500.0,1);
+const glm::vec4 SPAWN_POSITION_II = glm::vec4(-1000.0,-1000.0, 500.0, 1);
+
 const glm::vec4 ZERO_VEC = glm::vec4(0.0,0.0,0.0,0.0);
 const glm::vec4 EMPTY_POS   = glm::vec4(0.0,0.0,0.0,1.0);
-const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.001,0,0); //initial speed parallel with y-axis
+const glm::vec4 SPAWN_VELOCITY = glm::vec4(0,0.01,0,0); //initial speed parallel with y-axis
 
-const float BOID_COLOUR[3] = {0.474, 0.118, 0.114}; // using burgundy
+const float BOID_COLOUR_FLOCK_I[3] = {0.474, 0.118, 0.114};  // using burgundy for flock I
+const float BOID_COLOUR_FLOCK_II[3] = {0.420, 0.792, 0.886}; // using aquamarine for flock II
 
-#define BOID_SIZE                 200
+#define BOID_SIZE                 100
+
 const GLfloat A_BOID[][3] =
             {{0, 0, 0}, // position of the centroid
             {0, BOID_SIZE*2, 0}, // position of the head
@@ -54,7 +59,13 @@ const GLfloat A_BOID[][3] =
 
 const GLfloat A_BOID_COLORS[][3] = {
     {1.0, 1.0, 1.0}, 
-    {BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]},
+    {BOID_COLOUR_FLOCK_I[0], BOID_COLOUR_FLOCK_I[1], BOID_COLOUR_FLOCK_I[2]},
+    {1.0, 1.0, 1.0}, 
+    {1.0, 1.0, 1.0}};
+
+const GLfloat ANOTHER_BOID_COLORS[][3] = {
+    {1.0, 1.0, 1.0}, 
+    {BOID_COLOUR_FLOCK_II[0], BOID_COLOUR_FLOCK_II[1], BOID_COLOUR_FLOCK_II[2]},
     {1.0, 1.0, 1.0}, 
     {1.0, 1.0, 1.0}};
 

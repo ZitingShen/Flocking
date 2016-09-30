@@ -3,12 +3,14 @@
 
 BOID* new_boid(){
   BOID* a_boid = (BOID*)malloc(sizeof(BOID));
-  a_boid->pos = SPAWN_POSITION;
   a_boid->velocity = randomise_velocity(SPAWN_VELOCITY);
   a_boid->partner_radius = PARTNER_RADIUS;
-  a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION) 
+  a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION)
                           - MAX_WING_ROTATION;
   a_boid->flock_index = rand()%(DEFAULT_FLOCK_NUM);
+
+
+  a_boid->pos = (a_boid->flock_index==0)?SPAWN_POSITION_I:SPAWN_POSITION_II;
   a_boid->wing_rotation_direction = 1;
   return a_boid;
 }
@@ -18,7 +20,7 @@ BOID* new_boid(glm::vec4 velocity, float radius, glm::vec4 pos){
   a_boid->pos = pos;
   a_boid->velocity = velocity;
   a_boid->partner_radius = radius;
-  a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION) 
+  a_boid->wing_rotation = rand()%(2*MAX_WING_ROTATION)
                           - MAX_WING_ROTATION;
   a_boid->flock_index = rand()%(DEFAULT_FLOCK_NUM);
   a_boid->wing_rotation_direction = 1;
@@ -100,7 +102,7 @@ void update_wing_rotation(List* a_flock){
   NODE* current = a_flock->head;
   while (current != NULL){
     a_boid = (BOID*)(current->data);
-    if (a_boid->wing_rotation > MAX_WING_ROTATION || 
+    if (a_boid->wing_rotation > MAX_WING_ROTATION ||
         a_boid->wing_rotation < -MAX_WING_ROTATION)
       a_boid->wing_rotation_direction *= -1;
     a_boid->wing_rotation += a_boid->wing_rotation_direction*
@@ -114,7 +116,7 @@ glm::vec4 get_current_pos(BOID* a_boid){
 }
 
 glm::vec4 flock_centroid(List* a_flock){
-  if (a_flock == NULL || a_flock->length == 0) 
+  if (a_flock == NULL || a_flock->length == 0)
     return EMPTY_POS;
   NODE* current = a_flock->head;
   glm::vec4 centroid = EMPTY_POS;
@@ -126,25 +128,25 @@ glm::vec4 flock_centroid(List* a_flock){
 }
 
 glm::vec4 mid_point(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL || a_flock->length == 0) 
+  if (a_flock == NULL || a_flock->length == 0)
     return ZERO_VEC;
   return (flock_centroid(a_flock)+(a_goal->pos))*(0.5f);
 }
 
 glm::vec4 get_u(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL || a_flock->length == 0) 
+  if (a_flock == NULL || a_flock->length == 0)
     return ZERO_VEC;
   return (a_goal->pos - flock_centroid(a_flock));
 }
 
 float get_d(List* a_flock, GOAL* a_goal){
-  if (a_flock == NULL || a_flock->length == 0) 
+  if (a_flock == NULL || a_flock->length == 0)
     return 0;
   return glm::distance(flock_centroid(a_flock), a_goal->pos);
 }
 
 float flock_radius(List* a_flock){
-  if (a_flock == NULL || a_flock->length == 0) 
+  if (a_flock == NULL || a_flock->length == 0)
     return 0;
   float max_r = 0;
   float dis   = 0;
@@ -210,10 +212,13 @@ void draw_a_flock(List* a_flock){
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
   glVertexPointer(3, GL_FLOAT, 0, A_BOID);
-  glColorPointer(3, GL_FLOAT, 0, A_BOID_COLORS);
+  
 
   current = a_flock->head;
   for (int i = 0; i < a_flock->length; i++){
+    
+
+
     some_boid = (BOID*)(current->data);
     glm::vec3 velocity3(some_boid->velocity);
     velocity3 = glm::normalize(velocity3);
@@ -222,6 +227,8 @@ void draw_a_flock(List* a_flock){
     glm::vec3 rotate_normal = glm::normalize(glm::cross(velocity3, initial3));
     float angle = glm::orientedAngle(initial3, velocity3, 
                                      rotate_normal)*180/PI;
+
+    glColorPointer(3, GL_FLOAT, 0, (some_boid->flock_index==0)?A_BOID_COLORS:ANOTHER_BOID_COLORS);
 
     glPushMatrix();
     glTranslatef(some_boid->pos.x, some_boid->pos.y, some_boid->pos.z);
@@ -237,7 +244,7 @@ void draw_a_flock(List* a_flock){
   }
 
   glDisableClientState(GL_COLOR_ARRAY);
-  glColor3f(BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]);
+  /*glColor3f(BOID_COLOUR[0], BOID_COLOUR[1], BOID_COLOUR[2]);
   current = a_flock->head;
   for (int i = 0; i < a_flock->length; i++){
     some_boid = (BOID*)(current->data);
@@ -260,7 +267,7 @@ void draw_a_flock(List* a_flock){
     glDrawElements(GL_LINE_LOOP, 3, GL_UNSIGNED_BYTE, A_BOID_RIGHT);
     glPopMatrix();
     current = current->next;
-  }
+  }*/
   glDisableClientState(GL_VERTEX_ARRAY);
 }
 
