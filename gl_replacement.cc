@@ -21,7 +21,7 @@ void myLookAt(GLfloat eye[3], GLfloat centre[3], GLfloat up[3]){
 }
 
 void myPerspective(GLfloat fovy, GLfloat aspect, GLfloat zNear, GLfloat zFar){
-  GLfloat y_max = tan(fovy * M_PI/(float)360.0) * zNear;
+  GLfloat y_max = tan(fovy * DEGREE_TO_RADIAN) * zNear;
   GLfloat y_min = -y_max;
   GLfloat x_max = y_max * aspect;
   GLfloat x_min = -x_max;

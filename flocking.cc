@@ -11,11 +11,9 @@ GLfloat SQUARES_POS[BG_SQUARE_NUM*BG_SQUARE_NUM][2];
 int main(int argc, char** argv) {
   GLFWwindow* window;
 
-  // Initialize the library
   if (!glfwInit())
     exit(EXIT_FAILURE);
 
-  // Create a window and its OpenGL context
   window = glfwCreateWindow(500, 500, "Flocking", NULL, NULL);
   if (!window){
     glfwTerminate();
@@ -23,7 +21,6 @@ int main(int argc, char** argv) {
   }
   glfwSetWindowPos(window, 100, 0);
 
-  // Make the window's context current
   glfwMakeContextCurrent(window);
   glfwSetWindowSizeCallback(window, reshape);
   glfwSetKeyCallback(window, keyboard);
@@ -65,11 +62,8 @@ int main(int argc, char** argv) {
 }
 
 void init() {
-  // set the background color to white
   glClearColor(CLEAR_COLOR[0], CLEAR_COLOR[1], CLEAR_COLOR[2], 1.0);
-  // Set the drawing color to black
   glColor3f(0.0, 0.0, 0.0);
-  // initialise a flock of boid
   A_FLOCK = list_new();
   A_GOAL = new_goal();
   srand(time(NULL));
@@ -118,19 +112,19 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
       VIEW_MODE = SIDE;
       break;
 
-      case GLFW_KEY_A: // decrease x velocity
+      case GLFW_KEY_A:
       A_GOAL->MOVE_ALONG_X_NEGATIVE = true;
       break;
 
-      case GLFW_KEY_D: // increase x velocity
+      case GLFW_KEY_D:
       A_GOAL->MOVE_ALONG_X_POSITIVE = true;
       break;
 
-      case GLFW_KEY_W: // increase y velocity
+      case GLFW_KEY_W:
       A_GOAL->MOVE_ALONG_Y_POSITIVE = true;
       break;
 
-      case GLFW_KEY_S: // decrease y velocity
+      case GLFW_KEY_S:
       A_GOAL->MOVE_ALONG_Y_NEGATIVE = true;
       break;
 
@@ -151,19 +145,19 @@ void keyboard(GLFWwindow *w, int key, int scancode, int action, int mods) {
     }
   } else if (action == GLFW_RELEASE) {
     switch(key) {
-      case GLFW_KEY_A: // decrease x velocity
+      case GLFW_KEY_A:
       A_GOAL->MOVE_ALONG_X_NEGATIVE = false;
       break;
 
-      case GLFW_KEY_D: // increase x velocity
+      case GLFW_KEY_D:
       A_GOAL->MOVE_ALONG_X_POSITIVE = false;
       break;
 
-      case GLFW_KEY_W: // increase y velocity
+      case GLFW_KEY_W:
       A_GOAL->MOVE_ALONG_Y_POSITIVE = false;
       break;
 
-      case GLFW_KEY_S: // decrease y velocity
+      case GLFW_KEY_S:
       A_GOAL->MOVE_ALONG_Y_NEGATIVE = false;
       
       case GLFW_KEY_RIGHT:

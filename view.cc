@@ -1,6 +1,5 @@
 #include "view.h"
 #include "gl_replacement.h"
-#include <iostream>
 
 void change_view(viewMode viewmode, int width, int height, List *flock, 
                 GOAL *goal) {
